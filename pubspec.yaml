@@ -1,5 +1,5 @@
 name: gamilife
-description: "A new Flutter project."
+description: "Make your life easier with GamiLife - the ultimate task management app that turns your days into a fun and rewarding game!"
 publish_to: 'none'
 version: 0.1.0
 
@@ -9,11 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/gamilife-logo.png"
+  adaptive_icon_background: "#10B981"
+  adaptive_icon_foreground: "assets/icons/gamilife-foreground.png"
 
 flutter:
   uses-material-design: true
