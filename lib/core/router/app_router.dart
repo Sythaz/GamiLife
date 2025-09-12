@@ -1,4 +1,4 @@
-import 'package:gamilife/presentation/main_page.dart';
+import 'package:gamilife/presentation/pages/main_page.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {

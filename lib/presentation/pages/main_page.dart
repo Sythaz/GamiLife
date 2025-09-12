@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/constants/colors.dart';
-import 'package:gamilife/presentation/home_page.dart';
+import 'package:gamilife/presentation/pages/home_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,8 +19,8 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     _widgets = [
       const HomePage(),
-      const Placeholder(), // Explore
-      const Placeholder(), // Notifications
+      const Placeholder(), // Progress
+      const Placeholder(), // Timer
       const Placeholder(), // Profile
     ];
   }
