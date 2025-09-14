@@ -4,6 +4,7 @@ import 'package:gamilife/core/constants/colors.dart';
 
 import '../widget/banner_quest.dart';
 import '../widget/carousel_home.dart';
+import '../widget/heatmap_activities.dart';
 import '../widget/timeline_recent_activities.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +20,31 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Map<DateTime, int> sampleData = {
+      // Juli 2025 (2 bulan lalu)
+      DateTime(2025, 7, 1): 3,
+      DateTime(2025, 7, 5): 7,
+      DateTime(2025, 7, 10): 2,
+      DateTime(2025, 7, 15): 5,
+      DateTime(2025, 7, 20): 1,
+      DateTime(2025, 7, 25): 4,
+      DateTime(2025, 7, 30): 6,
+
+      // Agustus 2025 (1 bulan lalu)
+      DateTime(2025, 8, 2): 4,
+      DateTime(2025, 8, 8): 2,
+      DateTime(2025, 8, 12): 8,
+      DateTime(2025, 8, 18): 3,
+      DateTime(2025, 8, 22): 1,
+      DateTime(2025, 8, 28): 5,
+
+      // September 2025 (bulan sekarang - sesuaikan dengan tanggal sekarang)
+      DateTime(2025, 9, 1): 2,
+      DateTime(2025, 9, 5): 6,
+      DateTime(2025, 9, 10): 3,
+      DateTime(2025, 9, 14): 4, // Hari ini
+    };
+
     return Scaffold(
       backgroundColor: AppColors.primary,
       body: Stack(
@@ -72,11 +98,16 @@ class _HomePageState extends State<HomePage> {
                               _current = index;
                             });
                           },
-                          items: [BannerQuest(), BannerQuest()],
+                          items: [
+                            BannerQuest(),
+                            CustomHeatmapContribution(
+                              contributionData: sampleData,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         const Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          padding: EdgeInsets.symmetric(horizontal: 16),
                           child: Text(
                             'Recent Activities',
                             style: TextStyle(
