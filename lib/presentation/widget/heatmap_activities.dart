@@ -4,8 +4,7 @@ import 'package:gamilife/core/constants/colors.dart';
 class CustomHeatmapContribution extends StatelessWidget {
   final Map<DateTime, int> contributionData;
 
-  CustomHeatmapContribution({Key? key, required this.contributionData})
-    : super(key: key);
+  const CustomHeatmapContribution({super.key, required this.contributionData});
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +16,7 @@ class CustomHeatmapContribution extends StatelessWidget {
       DateTime(now.year, now.month, 1), // Bulan sekarang
     ];
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
-      child: _buildSeparatedHeatmapGrid(months),
-    );
+    return _buildSeparatedHeatmapGrid(months);
   }
 
   // Header bulan
@@ -58,6 +54,7 @@ class CustomHeatmapContribution extends StatelessWidget {
   // Grid heatmap terpisah per bulan
   Widget _buildSeparatedHeatmapGrid(List<DateTime> months) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         _buildDayLabels(),
         SizedBox(width: 8),
@@ -74,7 +71,7 @@ class CustomHeatmapContribution extends StatelessWidget {
                         : null, // Jarak antar bulan kecuali bulan terakhir
                     child: _buildMonthGrid(month),
                   );
-                }).toList(),
+                }),
               ],
             ),
           ],
@@ -92,31 +89,17 @@ class CustomHeatmapContribution extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (dayLabels.isNotEmpty) SizedBox(height: 27),
-        ...dayLabels
-            .map(
-              (label) => Text(
-                label,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: AppColors.dark,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            )
-            .toList(),
+        ...dayLabels.map(
+          (label) => Text(
+            label,
+            style: TextStyle(
+              fontSize: 11,
+              color: AppColors.dark,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
       ],
-      // dayLabels
-      //     .map(
-      //       (label) => Text(
-      //         label,
-      //         style: TextStyle(
-      //           fontSize: 12,
-      //           color: AppColors.dark,
-      //           fontWeight: FontWeight.bold,
-      //         ),
-      //       ),
-      //     )
-      //     .toList(),
     );
   }
 
@@ -250,46 +233,3 @@ class CustomHeatmapContribution extends StatelessWidget {
     return months[month - 1];
   }
 }
-
-// Widget untuk menampilkan legend
-// class HeatmapLegend extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         Text('Less', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-//         SizedBox(width: 8),
-
-//         // Legend squares
-//         Row(
-//           children: [
-//             _buildLegendSquare(Color(0xFFEBEDF0)),
-//             SizedBox(width: 3),
-//             _buildLegendSquare(Color(0xFFC6E48B)),
-//             SizedBox(width: 3),
-//             _buildLegendSquare(Color(0xFF7BC96F)),
-//             SizedBox(width: 3),
-//             _buildLegendSquare(Color(0xFF239A3B)),
-//             SizedBox(width: 3),
-//             _buildLegendSquare(Color(0xFF196127)),
-//           ],
-//         ),
-
-//         SizedBox(width: 8),
-//         Text('More', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-//       ],
-//     );
-//   }
-
-//   Widget _buildLegendSquare(Color color) {
-//     return Container(
-//       width: 10,
-//       height: 10,
-//       decoration: BoxDecoration(
-//         color: color,
-//         borderRadius: BorderRadius.circular(2),
-//       ),
-//     );
-//   }
-// }

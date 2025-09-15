@@ -11,7 +11,6 @@ class BannerQuest extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           end: Alignment.topLeft,
