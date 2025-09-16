@@ -6,6 +6,7 @@ import '../widget/banner_quest.dart';
 import '../widget/carousel_home.dart';
 import '../widget/heatmap_activities.dart';
 import '../widget/level_bar_container.dart';
+import '../widget/skill_point_card.dart';
 import '../widget/timeline_recent_activities.dart';
 import '../widget/user_avatar.dart';
 import '../widget/user_head_info.dart';
@@ -58,9 +59,9 @@ class _HomePageState extends State<HomePage> {
               left: 16,
               right: 16,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       UserAvatar(),
                       const SizedBox(width: 16),
@@ -80,12 +81,61 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ],
                   ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Skill Point',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white,
+                    ),
+                  ),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SkillPointCard(
+                          skillName: SkillName.Social,
+                          point: 99,
+                          thisWeekAccumulationPoint: 20,
+                        ),
+                        SkillPointCard(
+                          skillName: SkillName.INT,
+                          point: 89,
+                          thisWeekAccumulationPoint: 12,
+                        ),
+                        SkillPointCard(
+                          skillName: SkillName.VIT,
+                          point: 56,
+                          thisWeekAccumulationPoint: 2,
+                        ),
+                        SkillPointCard(
+                          skillName: SkillName.Willpower,
+                          point: 89,
+                          thisWeekAccumulationPoint: 0,
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () {},
+                          child: SizedBox(
+                            width: 88,
+                            height: 95,
+                            child: Card(
+                              color: AppColors.white,
+                              child: Icon(Icons.add, color: AppColors.primary),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
             DraggableScrollableSheet(
-              initialChildSize: 0.7,
-              minChildSize: 0.7,
+              initialChildSize: 0.73,
+              minChildSize: 0.73,
               maxChildSize: 0.95,
               builder: (context, scrollController) {
                 return Container(
@@ -98,7 +148,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   child: ListView(
-                    // padding: EdgeInsets.only(top: 6.5),
                     controller: scrollController,
                     children: [
                       Column(

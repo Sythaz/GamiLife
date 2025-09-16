@@ -17,8 +17,11 @@ class AppColors {
 
   // Accent Colors
   static const Color yellowAccent = Color(0xffF59E0B);
+  static const Color yellowAccent2 = Color(0xffFFB841);
   static const Color redAccent = Color(0xffEF4444);
+  static const Color redAccent2 = Color(0xffF86B6B);
   static const Color purpleAccent = Color(0xff8B5CF6);
+  static const Color purpleAccent2 = Color(0xff9E75FD);
 
   // Gray Scale
   static const Color gray0 = Color(0xffE5E7EB);
