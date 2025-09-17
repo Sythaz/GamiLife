@@ -25,7 +25,7 @@ class CarouselHome extends StatelessWidget {
           carouselController: controller,
           options: CarouselOptions(
             height: 150.0,
-            enableInfiniteScroll: false,
+            // enableInfiniteScroll: false,
             viewportFraction: 1,
             onPageChanged: onPageChanged,
           ),

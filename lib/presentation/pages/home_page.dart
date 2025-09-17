@@ -117,7 +117,9 @@ class _HomePageState extends State<HomePage> {
                         ),
                         InkWell(
                           borderRadius: BorderRadius.circular(12),
-                          onTap: () {},
+                          onTap: () {
+                            // TODO: Add more Skill Point
+                          },
                           child: SizedBox(
                             width: 88,
                             height: 95,
