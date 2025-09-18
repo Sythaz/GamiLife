@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 
 class UserAvatar extends StatelessWidget {
   const UserAvatar({super.key});

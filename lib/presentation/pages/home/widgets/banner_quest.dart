@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamilife/presentation/widget/checkin_modal_content.dart';
+import 'package:gamilife/presentation/pages/home/widgets/checkin_modal_content.dart';
 
-import '../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 import 'starfield_painter.dart';
 
 // Terdapat MediaQuery dan onPressed sehingga lebih baik tidak dijadikan const saat dipanggil

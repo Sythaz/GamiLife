@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamilife/presentation/widget/daily_checkin_xp.dart';
+import 'package:gamilife/presentation/pages/home/widgets/daily_checkin_xp.dart';
 
-import '../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 
 class CheckInModalContent extends StatelessWidget {
   final int countCheckIn;

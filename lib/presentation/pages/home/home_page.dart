@@ -2,14 +2,14 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/constants/colors.dart';
 
-import '../widget/banner_quest.dart';
-import '../widget/carousel_home.dart';
-import '../widget/heatmap_activities.dart';
-import '../widget/level_bar_container.dart';
-import '../widget/skill_point_card.dart';
-import '../widget/timeline_recent_activities.dart';
-import '../widget/user_avatar.dart';
-import '../widget/user_head_info.dart';
+import 'widgets/banner_quest.dart';
+import 'widgets/carousel_home.dart';
+import 'widgets/heatmap_activities.dart';
+import 'widgets/level_bar_container.dart';
+import 'widgets/skill_point_card.dart';
+import '../../widgets/timeline_recent_activities.dart';
+import 'widgets/user_avatar.dart';
+import 'widgets/user_head_info.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

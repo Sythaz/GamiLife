@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gamilife/presentation/widget/animated_xp_bar.dart';
+import 'package:gamilife/presentation/pages/home/widgets/animated_xp_bar.dart';
 
-import '../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 
 class LevelBarContainer extends StatelessWidget {
   final int level; // Nilai level

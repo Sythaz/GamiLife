@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/constants/colors.dart';
-import 'package:gamilife/presentation/pages/home_page.dart';
+import 'package:gamilife/presentation/pages/home/home_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});

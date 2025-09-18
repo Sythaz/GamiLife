@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-import '../../core/constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 
 class CarouselHome extends StatelessWidget {
   final CarouselSliderController controller;
