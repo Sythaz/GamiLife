@@ -62,7 +62,7 @@ class BannerQuest extends StatelessWidget {
                   ),
                   context: context,
                   builder: (context) {
-                    return CheckInModalContent();
+                    return CheckInModalContent(countCheckIn: 8);
                   },
                 );
               },

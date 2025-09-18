@@ -4,7 +4,8 @@ import 'package:gamilife/presentation/widget/daily_checkin_xp.dart';
 import '../../core/constants/colors.dart';
 
 class CheckInModalContent extends StatelessWidget {
-  const CheckInModalContent({super.key});
+  final int countCheckIn;
+  const CheckInModalContent({super.key, required this.countCheckIn});
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +45,20 @@ class CheckInModalContent extends StatelessWidget {
               ],
             ),
           ),
+          SizedBox(height: 16),
+          countCheckIn > 7
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Text(
+                    'Wahh! Sudah 🔥 $countCheckIn Hari Beruntun!',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              : Container(),
           SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
