@@ -50,48 +50,68 @@ class _MainPageState extends State<MainPage> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(
+        // height: 70,
+        padding: EdgeInsets.zero,
         color: AppColors.white,
-        height: 60,
         shape: const CircularNotchedRectangle(),
         notchMargin: 10.0,
         child: Row(
           children: [
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.home),
-                    iconSize: 30,
-                    onPressed: () => _changeTab(0),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    iconSize: 30,
-                    onPressed: () => _changeTab(1),
-                  ),
+                  _navButton(0, Icons.home, 'Home'),
+                  _navButton(1, Icons.trending_up, 'Progress'),
                 ],
               ),
             ),
-            const SizedBox(width: 100),
+            SizedBox(width: 72),
             Expanded(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications),
-                    iconSize: 30,
-                    onPressed: () => _changeTab(2),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.person),
-                    iconSize: 30,
-                    onPressed: () => _changeTab(3),
-                  ),
+                  _navButton(2, Icons.timer_outlined, 'Timer'),
+                  _navButton(3, Icons.person_outline, 'Profile'),
                 ],
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _navButton(int indexTab, IconData icon, String label) {
+    return Expanded(
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => _changeTab(indexTab),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                size: 24,
+                color: _selectedIndex == indexTab
+                    ? AppColors.primary
+                    : AppColors.gray2,
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: _selectedIndex == indexTab
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                  color: _selectedIndex == indexTab
+                      ? AppColors.primary
+                      : AppColors.gray2,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
