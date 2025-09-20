@@ -16,6 +16,7 @@ dependencies:
   any_link_preview: ^3.0.3
   shimmer: ^3.0.0
   flutter_svg: ^2.2.1
+  flutter_timer_countdown: ^1.0.7
 
 dev_dependencies:
   flutter_test:
