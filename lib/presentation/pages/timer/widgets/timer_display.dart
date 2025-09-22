@@ -42,16 +42,13 @@ class TimerDisplayWidget extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: AppColors.white,
                 ),
-                endTime: _timerEndTime!,
+                endTime: _timerEndTime,
                 onEnd: () {
                   // TODO: Tambahkan alarm notification
                 },
               )
             : Text(
                 // Saat pause, tampilkan sisa waktu manual
-                // _currentMode == TimerMode.popular
-                //     ? formatTimerDuration(_remainingPopular)
-                //     : formatTimerDuration(_remainingCustom),
                 formatTimerDuration(_remaining),
                 style: TextStyle(
                   fontSize: 64,
