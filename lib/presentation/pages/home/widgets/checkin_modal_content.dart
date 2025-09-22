@@ -17,10 +17,15 @@ class CheckInModalContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           IconButton(
+            iconSize: 32,
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.close, color: AppColors.white),
+            icon: Icon(
+              Icons.close,
+              fontWeight: FontWeight.bold,
+              color: AppColors.white,
+            ),
           ),
           Center(
             child: Column(

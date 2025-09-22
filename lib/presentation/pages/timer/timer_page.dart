@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamilife/presentation/pages/timer/helpers/timer_session.dart';
 
 import '../../../core/constants/colors.dart';
-import 'widgets/new_session_button.dart';
+import 'widgets/add_session_button.dart';
 import 'widgets/session_container.dart';
 import 'widgets/timer_controller.dart';
 import 'widgets/timer_display.dart';
@@ -306,7 +306,7 @@ class _TimerPageState extends State<TimerPage> {
                 ),
                 SizedBox(height: 16),
                 _currentMode == TimerMode.custom && _customSession.isEmpty
-                    ? AddNewSessionButton()
+                    ? AddSessionButton()
                     : Expanded(
                         child: ListView.builder(
                           itemCount: _currentMode == TimerMode.popular
@@ -315,7 +315,7 @@ class _TimerPageState extends State<TimerPage> {
                           itemBuilder: (context, index) {
                             return _currentMode == TimerMode.custom &&
                                     index == _customSession.length - 1
-                                ? AddNewSessionButton()
+                                ? AddSessionButton()
                                 : SessionContainer(
                                     index: index,
                                     changeSession: () => _changeSession(index),
