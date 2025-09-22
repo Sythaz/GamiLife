@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/colors.dart';
@@ -14,6 +15,10 @@ class AddTimerModalContent extends StatefulWidget {
 class _AddTimerModalContentState extends State<AddTimerModalContent> {
   TimerCategoryMode _currentTimerCategory = TimerCategoryMode.focus;
   final TextEditingController _timerLabelController = TextEditingController();
+
+  int selectedHour = 0;
+  int selectedMinute = 0;
+  int selectedSecond = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +63,134 @@ class _AddTimerModalContentState extends State<AddTimerModalContent> {
               ],
             ),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              height: 140,
+              child: Row(
+                children: [
+                  // Hour Picker
+                  Expanded(
+                    child: CupertinoPicker(
+                      selectionOverlay: null,
+                      backgroundColor: AppColors.white,
+                      itemExtent: 55,
+                      diameterRatio: 2,
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          selectedHour = index;
+                        });
+                      },
+                      children: List.generate(24, (index) {
+                        return Center(
+                          child: Text(
+                            index.toString().padLeft(2, '0'),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: index == selectedHour
+                                  ? AppColors.primary
+                                  : AppColors.gray1,
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                  Text(
+                    'hour',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+
+                  // Minute Picker
+                  Expanded(
+                    child: CupertinoPicker(
+                      selectionOverlay: null,
+                      backgroundColor: AppColors.white,
+                      itemExtent: 55,
+                      diameterRatio: 2,
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          selectedMinute = index;
+                        });
+                      },
+                      children: List.generate(
+                        60,
+                        (index) => Center(
+                          child: Text(
+                            index.toString().padLeft(2, '0'),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: index == selectedMinute
+                                  ? AppColors.primary
+                                  : AppColors.gray1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'min',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+
+                  // Second Picker
+                  Expanded(
+                    child: CupertinoPicker(
+                      selectionOverlay: null,
+                      backgroundColor: AppColors.white,
+                      itemExtent: 55,
+                      diameterRatio: 2,
+                      onSelectedItemChanged: (index) {
+                        setState(() {
+                          selectedSecond = index;
+                        });
+                      },
+                      children: List.generate(
+                        60,
+                        (index) => Center(
+                          child: Text(
+                            index.toString().padLeft(2, '0'),
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: index == selectedSecond
+                                  ? AppColors.primary
+                                  : AppColors.gray1,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'sec',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 16,
+                      color: AppColors.primary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 16),
           Padding(
             padding: const EdgeInsets.only(left: 16, right: 16, bottom: 6),
