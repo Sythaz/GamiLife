@@ -4,7 +4,7 @@ import '../../../../core/constants/colors.dart';
 import '../helpers/format_duration.dart';
 import '../helpers/timer_session.dart';
 
-class SessionContainer extends StatelessWidget {
+class TimerSessionContainer extends StatelessWidget {
   final int index;
   final VoidCallback changeSession;
 
@@ -16,7 +16,7 @@ class SessionContainer extends StatelessWidget {
   final List<TimerSession> popularSession;
   final List<TimerSession> customSession;
 
-  const SessionContainer({
+  const TimerSessionContainer({
     super.key,
     required this.index,
     required this.changeSession,
@@ -124,8 +124,7 @@ class SessionContainer extends StatelessWidget {
                   ),
                   // Icon Button
                   child: currentMode == TimerMode.popular
-                      ? currentSessionIndexPopular == index ||
-                                currentSessionIndexPopular == index + 1
+                      ? currentSessionIndexPopular == index
                             ? Icon(
                                 Icons.restart_alt_rounded,
                                 color: AppColors.white,

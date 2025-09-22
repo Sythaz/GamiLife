@@ -3,7 +3,7 @@ import 'package:gamilife/presentation/pages/timer/helpers/timer_session.dart';
 
 import '../../../core/constants/colors.dart';
 import 'widgets/add_session_button.dart';
-import 'widgets/session_container.dart';
+import 'widgets/timer_session_container.dart';
 import 'widgets/timer_controller.dart';
 import 'widgets/timer_display.dart';
 
@@ -316,7 +316,7 @@ class _TimerPageState extends State<TimerPage> {
                             return _currentMode == TimerMode.custom &&
                                     index == _customSession.length - 1
                                 ? AddSessionButton()
-                                : SessionContainer(
+                                : TimerSessionContainer(
                                     index: index,
                                     changeSession: () => _changeSession(index),
                                     currentMode: _currentMode,
