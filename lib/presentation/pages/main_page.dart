@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/constants/colors.dart';
 import 'package:gamilife/presentation/pages/home/home_page.dart';
+import 'package:gamilife/presentation/pages/progress/progress_page.dart';
 import 'package:gamilife/presentation/pages/timer/timer_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -11,7 +12,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 2;
+  int _selectedIndex = 1;
 
   late final List<Widget> _widgets;
 
@@ -20,8 +21,8 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     _widgets = [
       const HomePage(),
-      const Placeholder(), // Timer
-      const TimerPage(), // Progress
+      const ProgressPage(), // Progress
+      const TimerPage(), // Timer
       const Placeholder(), // Profile
     ];
   }
