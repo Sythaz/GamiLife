@@ -225,7 +225,8 @@ class _AddTimerModalContentState extends State<AddTimerModalContent> {
                   onSelected: (value) {
                     setState(() {
                       // Set [_currentTimerCategory] menjadi TimerCategoryCustom.focus
-                      _currentTimerCategory = TimerCategoryCustom.focus;
+                      // nilai value sama dengan buttonCategory
+                      _currentTimerCategory = value;
                     });
                   },
                 ),
@@ -244,7 +245,8 @@ class _AddTimerModalContentState extends State<AddTimerModalContent> {
                   onSelected: (value) {
                     setState(() {
                       // Set [_currentTimerCategory] menjadi TimerCategoryCustom.rest
-                      _currentTimerCategory = TimerCategoryCustom.rest;
+                      // nilai value sama dengan buttonCategory
+                      _currentTimerCategory = value;
                     });
                   },
                 ),

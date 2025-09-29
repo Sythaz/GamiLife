@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/presentation/pages/timer/helpers/timer_session.dart';
+import 'package:gamilife/presentation/widgets/category_button.dart';
+import 'package:gamilife/presentation/widgets/container_category_button.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../../core/enums/enums_button_category.dart';
@@ -225,86 +228,54 @@ class _TimerPageState extends State<TimerPage> {
                   remainingPopular: _remainingPopular,
                 ),
 
-                Container(
-                  height: 40,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: AppColors.gray0,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 3,
-                      vertical: 3,
+                ContainerCategoryButton(
+                  currentCategory: _currentMode,
+                  children: [
+                    CustomCategoryButton(
+                      label: 'Popular',
+                      currentCategory: _currentMode,
+                      buttonCategory: TimerCategory.popular,
+                      buttonColorLogic: TimerCategoryButtonConfig.background(
+                        currentCategory: _currentMode,
+                        buttonCategory: TimerCategory.popular,
+                      ),
+                      textColorLogic: TimerCategoryButtonConfig.text(
+                        currentCategory: _currentMode,
+                        buttonCategory: TimerCategory.popular,
+                      ),
+                      onSelected: (value) {
+                        _pauseTimer();
+                        setState(() {
+                          // Set [_currentMode] menjadi TimerCategory.popular
+                          // nilai value sama dengan buttonCategory
+                          _currentMode = value;
+                        });
+                      },
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              _pauseTimer();
-                              setState(() {
-                                // Set [_currentMode] menjadi TimerCategory.popular
-                                _currentMode = TimerCategory.popular;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: _currentMode == TimerCategory.popular
-                                    ? AppColors.white
-                                    : AppColors.gray0,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Popular',
-                                  style: TextStyle(
-                                    color: _currentMode == TimerCategory.popular
-                                        ? AppColors.primary
-                                        : AppColors.gray2,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: InkWell(
-                            onTap: () {
-                              _pauseTimer();
-                              setState(() {
-                                // Set [_currentMode] menjadi TimerCategory.custom
-                                _currentMode = TimerCategory.custom;
-                              });
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: _currentMode == TimerCategory.custom
-                                    ? AppColors.white
-                                    : AppColors.gray0,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Custom',
-                                  style: TextStyle(
-                                    color: _currentMode == TimerCategory.custom
-                                        ? AppColors.primary
-                                        : AppColors.gray2,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                    CustomCategoryButton(
+                      label: 'Custom',
+                      currentCategory: _currentMode,
+                      buttonCategory: TimerCategory.custom,
+                      buttonColorLogic: TimerCategoryButtonConfig.background(
+                        currentCategory: _currentMode,
+                        buttonCategory: TimerCategory.custom,
+                      ),
+                      textColorLogic: TimerCategoryButtonConfig.text(
+                        currentCategory: _currentMode,
+                        buttonCategory: TimerCategory.custom,
+                      ),
+                      onSelected: (value) {
+                        _pauseTimer();
+                        setState(() {
+                          // Set [_currentMode] menjadi TimerCategory.custom
+                          // nilai value sama dengan buttonCategory
+                          _currentMode = value;
+                        });
+                      },
                     ),
-                  ),
+                  ],
                 ),
+
                 SizedBox(height: 16),
                 _currentMode == TimerCategory.custom && _customSession.isEmpty
                     ? AddSessionButton()

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/colors.dart';
-import '../../core/enums/enums_button_category.dart';
 
+// [T] disini memiliki arti bahwa tipe datanya belum ditentukan
+// sehingga dapat menggunakan lebih dari 1 tipe data (enum) yang berbeda
 class ContainerCategoryButton<T> extends StatelessWidget {
   final T currentCategory;
   final List<Widget> children;
