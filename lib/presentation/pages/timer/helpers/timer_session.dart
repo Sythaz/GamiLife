@@ -1,8 +1,6 @@
 // Karena kita memiliki 2 mode, sehingga kita deklarasikan enum dahulu
 import 'package:flutter/material.dart';
 
-enum TimerMode { popular, custom }
-
 // Class untuk helper / model agar dapat menyimpan informasi sesi timer lebih mudah
 class TimerSession {
   final Duration duration;

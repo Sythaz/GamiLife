@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gamilife/presentation/pages/timer/helpers/timer_session.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../../core/enums/enums_button_category.dart';
 import 'widgets/add_session_button.dart';
 import 'widgets/timer_session_container.dart';
 import 'widgets/timer_controller.dart';
@@ -35,7 +36,7 @@ class _TimerPageState extends State<TimerPage> {
   ];
 
   // Variable untuk menentukan mode sekarang
-  TimerMode _currentMode = TimerMode.popular;
+  TimerCategory _currentMode = TimerCategory.popular;
 
   int _currentSessionIndexPopular = 0;
   int _currentSessionIndexCustom = 0;
@@ -49,7 +50,7 @@ class _TimerPageState extends State<TimerPage> {
   void _startTimer() {
     setState(() {
       // Kita ambil durasi sesi terakhir
-      final durationEndTime = _currentMode == TimerMode.popular
+      final durationEndTime = _currentMode == TimerCategory.popular
           ? _remainingPopular
           : _customSession.isEmpty
           ? Duration.zero
@@ -71,7 +72,7 @@ class _TimerPageState extends State<TimerPage> {
 
       setState(() {
         // Mengisi [_remaining] dengan waktu yang tersisa
-        if (_currentMode == TimerMode.popular) {
+        if (_currentMode == TimerCategory.popular) {
           // Mengecek jika waktu yang tersisa menjadi negatif maka set [_remaining] menjadi 0
           // Dan jika tidak negatif maka set [_remaining] menjadi waktu yang tersisa
           _remainingPopular = endTimeDiff.isNegative
@@ -91,7 +92,7 @@ class _TimerPageState extends State<TimerPage> {
   void _resetTimer() {
     setState(() {
       // Mengisi [_remaining] dengan durasi sesi asli sesuai mode
-      if (_currentMode == TimerMode.popular) {
+      if (_currentMode == TimerCategory.popular) {
         _remainingPopular =
             _popularSession[_currentSessionIndexPopular].duration;
       } else {
@@ -115,7 +116,7 @@ class _TimerPageState extends State<TimerPage> {
   void _nextSession() {
     setState(() {
       // Jika mode popular
-      if (_currentMode == TimerMode.popular) {
+      if (_currentMode == TimerCategory.popular) {
         // Jika sesi belum sesi terakhir, lanjut ke sesi selanjutnya
         if (_currentSessionIndexPopular < _popularSession.length - 1) {
           _currentSessionIndexPopular++;
@@ -127,7 +128,7 @@ class _TimerPageState extends State<TimerPage> {
             _popularSession[_currentSessionIndexPopular].duration;
         _timerEndTime = DateTime.now().add(_remainingPopular);
         // Jika mode custom
-      } else if (_currentMode == TimerMode.custom) {
+      } else if (_currentMode == TimerCategory.custom) {
         // Jika custom session masih kosong
         if (_customSession.isEmpty) return;
 
@@ -149,13 +150,13 @@ class _TimerPageState extends State<TimerPage> {
   void _changeSession(int newIndex) {
     setState(() {
       // Jika mode popular
-      if (_currentMode == TimerMode.popular) {
+      if (_currentMode == TimerCategory.popular) {
         _currentSessionIndexPopular = newIndex;
         _remainingPopular =
             _popularSession[_currentSessionIndexPopular].duration;
         _timerEndTime = DateTime.now().add(_remainingPopular);
         // Jika mode custom
-      } else if (_currentMode == TimerMode.custom) {
+      } else if (_currentMode == TimerCategory.custom) {
         // Jika custom session masih kosong
         if (_customSession.isEmpty) return;
 
@@ -173,7 +174,7 @@ class _TimerPageState extends State<TimerPage> {
   void initState() {
     super.initState();
 
-    if (_currentMode == TimerMode.popular) {
+    if (_currentMode == TimerCategory.popular) {
       _remainingPopular = _popularSession[_currentSessionIndexPopular].duration;
     } else if (_customSession.isNotEmpty) {
       _remainingCustom = _customSession[_currentSessionIndexCustom].duration;
@@ -204,7 +205,7 @@ class _TimerPageState extends State<TimerPage> {
                 TimerDisplayWidget(
                   isRunning: _isRunning,
                   timerEndTime: _timerEndTime,
-                  remaining: _currentMode == TimerMode.popular
+                  remaining: _currentMode == TimerCategory.popular
                       ? _remainingPopular
                       : _remainingCustom,
                   onTap: () {
@@ -243,13 +244,13 @@ class _TimerPageState extends State<TimerPage> {
                             onTap: () {
                               _pauseTimer();
                               setState(() {
-                                // Set [_currentMode] menjadi TimerMode.popular
-                                _currentMode = TimerMode.popular;
+                                // Set [_currentMode] menjadi TimerCategory.popular
+                                _currentMode = TimerCategory.popular;
                               });
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: _currentMode == TimerMode.popular
+                                color: _currentMode == TimerCategory.popular
                                     ? AppColors.white
                                     : AppColors.gray0,
                                 borderRadius: BorderRadius.circular(8),
@@ -258,7 +259,7 @@ class _TimerPageState extends State<TimerPage> {
                                 child: Text(
                                   'Popular',
                                   style: TextStyle(
-                                    color: _currentMode == TimerMode.popular
+                                    color: _currentMode == TimerCategory.popular
                                         ? AppColors.primary
                                         : AppColors.gray2,
                                     fontSize: 12,
@@ -274,13 +275,13 @@ class _TimerPageState extends State<TimerPage> {
                             onTap: () {
                               _pauseTimer();
                               setState(() {
-                                // Set [_currentMode] menjadi TimerMode.custom
-                                _currentMode = TimerMode.custom;
+                                // Set [_currentMode] menjadi TimerCategory.custom
+                                _currentMode = TimerCategory.custom;
                               });
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: _currentMode == TimerMode.custom
+                                color: _currentMode == TimerCategory.custom
                                     ? AppColors.white
                                     : AppColors.gray0,
                                 borderRadius: BorderRadius.circular(8),
@@ -289,7 +290,7 @@ class _TimerPageState extends State<TimerPage> {
                                 child: Text(
                                   'Custom',
                                   style: TextStyle(
-                                    color: _currentMode == TimerMode.custom
+                                    color: _currentMode == TimerCategory.custom
                                         ? AppColors.primary
                                         : AppColors.gray2,
                                     fontSize: 12,
@@ -305,15 +306,15 @@ class _TimerPageState extends State<TimerPage> {
                   ),
                 ),
                 SizedBox(height: 16),
-                _currentMode == TimerMode.custom && _customSession.isEmpty
+                _currentMode == TimerCategory.custom && _customSession.isEmpty
                     ? AddSessionButton()
                     : Expanded(
                         child: ListView.builder(
-                          itemCount: _currentMode == TimerMode.popular
+                          itemCount: _currentMode == TimerCategory.popular
                               ? _popularSession.length
                               : _customSession.length,
                           itemBuilder: (context, index) {
-                            return _currentMode == TimerMode.custom &&
+                            return _currentMode == TimerCategory.custom &&
                                     index == _customSession.length - 1
                                 ? AddSessionButton()
                                 : TimerSessionContainer(

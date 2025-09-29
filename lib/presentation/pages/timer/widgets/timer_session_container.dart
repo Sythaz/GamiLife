@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/enums/enums_button_category.dart';
 import '../helpers/format_duration.dart';
 import '../helpers/timer_session.dart';
 
@@ -8,7 +9,7 @@ class TimerSessionContainer extends StatelessWidget {
   final int index;
   final VoidCallback changeSession;
 
-  final TimerMode currentMode;
+  final TimerCategory currentMode;
 
   final int currentSessionIndexPopular;
   final int currentSessionIndexCustom;
@@ -52,7 +53,7 @@ class TimerSessionContainer extends StatelessWidget {
                     height: double.infinity,
                     width: 50,
                     decoration: BoxDecoration(
-                      color: currentMode == TimerMode.popular
+                      color: currentMode == TimerCategory.popular
                           ? currentSessionIndexPopular == index
                                 ? AppColors.primary
                                 : AppColors.gray0
@@ -62,7 +63,7 @@ class TimerSessionContainer extends StatelessWidget {
                       borderRadius: BorderRadius.circular(50),
                     ),
                     child: Icon(
-                      currentMode == TimerMode.popular
+                      currentMode == TimerCategory.popular
                           ? popularSession[index].icon
                           : customSession.isNotEmpty
                           ? customSession[index].icon
@@ -80,7 +81,7 @@ class TimerSessionContainer extends StatelessWidget {
                       Text(
                         // Format durasi sesi 00:00 dari function format
                         formatSessionDuration(
-                          currentMode == TimerMode.popular
+                          currentMode == TimerCategory.popular
                               ? popularSession[index].duration
                               : customSession[index].duration,
                         ),
@@ -91,7 +92,7 @@ class TimerSessionContainer extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        currentMode == TimerMode.popular
+                        currentMode == TimerCategory.popular
                             ? popularSession[index].label
                             : customSession[index].label,
                         style: TextStyle(
@@ -111,7 +112,7 @@ class TimerSessionContainer extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: currentMode == TimerMode.popular
+                    color: currentMode == TimerCategory.popular
                         ? currentSessionIndexPopular == index ||
                                   currentSessionIndexPopular == index - 1
                               ? AppColors.primary
@@ -123,7 +124,7 @@ class TimerSessionContainer extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   // Icon Button
-                  child: currentMode == TimerMode.popular
+                  child: currentMode == TimerCategory.popular
                       ? currentSessionIndexPopular == index
                             ? Icon(
                                 Icons.restart_alt_rounded,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/constants/colors.dart';
-import '../helpers/timer_session.dart';
+import '../../../../core/enums/enums_button_category.dart';
 
 class TimerControllerWidget extends StatelessWidget {
-  final TimerMode currentMode;
+  final TimerCategory currentMode;
 
   final Duration remainingPopular;
   final Duration remainingCustom;
@@ -53,7 +53,7 @@ class TimerControllerWidget extends StatelessWidget {
           child: IconButton(
             onPressed: () {
               // Ambil _remaining dari mode saat ini
-              final currentRemaining = currentMode == TimerMode.popular
+              final currentRemaining = currentMode == TimerCategory.popular
                   ? remainingPopular
                   : remainingCustom;
 
