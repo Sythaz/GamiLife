@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../core/enums/enums_button_category.dart';
-
-class CustomCategoryButton extends StatelessWidget {
+class CustomCategoryButton<T> extends StatelessWidget {
   final String label;
-  final ActivityCategory currentCategory;
-  final ActivityCategory buttonCategory;
+  final T currentCategory;
+  final T buttonCategory;
   final Color buttonColorLogic;
   final Color textColorLogic;
-  final ValueChanged<ActivityCategory> onSelected;
+  final ValueChanged<T> onSelected;
 
   const CustomCategoryButton({
     super.key,

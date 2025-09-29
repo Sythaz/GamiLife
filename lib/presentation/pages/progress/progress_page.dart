@@ -51,7 +51,7 @@ class _ProgressPageState extends State<ProgressPage> {
             SearchField(searchController: _searchController),
             SizedBox(height: 16),
             ContainerCategoryButton(
-              currentActivityCategory: _currentActivityCategory,
+              currentCategory: _currentActivityCategory,
               children: [
                 CustomCategoryButton(
                   label: 'All',

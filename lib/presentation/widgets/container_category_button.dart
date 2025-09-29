@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import '../../core/constants/colors.dart';
 import '../../core/enums/enums_button_category.dart';
 
-class ContainerCategoryButton extends StatelessWidget {
-  final ActivityCategory currentActivityCategory;
+class ContainerCategoryButton<T> extends StatelessWidget {
+  final T currentCategory;
   final List<Widget> children;
 
   const ContainerCategoryButton({
     super.key,
-    required this.currentActivityCategory,
+    required this.currentCategory,
     required this.children,
   });
 

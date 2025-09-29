@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gamilife/core/config/category_button_config.dart';
+import 'package:gamilife/core/enums/enums_button_category.dart';
+import 'package:gamilife/presentation/widgets/category_button.dart';
+import 'package:gamilife/presentation/widgets/container_category_button.dart';
 
 import '../../../../core/constants/colors.dart';
-
-enum TimerCategoryMode { focus, rest }
 
 class AddTimerModalContent extends StatefulWidget {
   const AddTimerModalContent({super.key});
@@ -13,7 +15,7 @@ class AddTimerModalContent extends StatefulWidget {
 }
 
 class _AddTimerModalContentState extends State<AddTimerModalContent> {
-  TimerCategoryMode _currentTimerCategory = TimerCategoryMode.focus;
+  TimerCategoryCustom _currentTimerCategory = TimerCategoryCustom.focus;
   final TextEditingController _timerLabelController = TextEditingController();
 
   int selectedHour = 0;
@@ -203,85 +205,50 @@ class _AddTimerModalContentState extends State<AddTimerModalContent> {
               ),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            height: 40,
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.gray0,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 3),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          // Set [_currentTimerCategory] menjadi TimerCategoryMode.focus
-                          _currentTimerCategory = TimerCategoryMode.focus;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color:
-                              _currentTimerCategory == TimerCategoryMode.focus
-                              ? AppColors.white
-                              : AppColors.gray0,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Focus',
-                            style: TextStyle(
-                              color:
-                                  _currentTimerCategory ==
-                                      TimerCategoryMode.focus
-                                  ? AppColors.primary
-                                  : AppColors.gray2,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: ContainerCategoryButton(
+              currentCategory: _currentTimerCategory,
+              children: [
+                CustomCategoryButton(
+                  label: 'Focus',
+                  currentCategory: _currentTimerCategory,
+                  buttonCategory: TimerCategoryCustom.focus,
+                  buttonColorLogic: TimerCategoryButtonConfig.background(
+                    currentCategory: _currentTimerCategory,
+                    buttonCategory: TimerCategoryCustom.focus,
                   ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          // Set [_currentTimerCategory] menjadi TimerCategoryMode.rest
-                          _currentTimerCategory = TimerCategoryMode.rest;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: _currentTimerCategory == TimerCategoryMode.rest
-                              ? AppColors.white
-                              : AppColors.gray0,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Rest',
-                            style: TextStyle(
-                              color:
-                                  _currentTimerCategory ==
-                                      TimerCategoryMode.rest
-                                  ? AppColors.primary
-                                  : AppColors.gray2,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                  textColorLogic: TimerCategoryButtonConfig.text(
+                    currentCategory: _currentTimerCategory,
+                    buttonCategory: TimerCategoryCustom.focus,
                   ),
-                ],
-              ),
+                  onSelected: (value) {
+                    setState(() {
+                      // Set [_currentTimerCategory] menjadi TimerCategoryCustom.focus
+                      _currentTimerCategory = TimerCategoryCustom.focus;
+                    });
+                  },
+                ),
+                CustomCategoryButton(
+                  label: 'Rest',
+                  currentCategory: _currentTimerCategory,
+                  buttonCategory: TimerCategoryCustom.rest,
+                  buttonColorLogic: TimerCategoryButtonConfig.background(
+                    currentCategory: _currentTimerCategory,
+                    buttonCategory: TimerCategoryCustom.rest,
+                  ),
+                  textColorLogic: TimerCategoryButtonConfig.text(
+                    currentCategory: _currentTimerCategory,
+                    buttonCategory: TimerCategoryCustom.rest,
+                  ),
+                  onSelected: (value) {
+                    setState(() {
+                      // Set [_currentTimerCategory] menjadi TimerCategoryCustom.rest
+                      _currentTimerCategory = TimerCategoryCustom.rest;
+                    });
+                  },
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 16),

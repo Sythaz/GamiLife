@@ -34,8 +34,8 @@ class ProgressCategoryButtonConfig {
 
 class TimerCategoryButtonConfig {
   static Color background({
-    required TimerCategory currentCategory,
-    required TimerCategory buttonCategory,
+    required TimerCategoryCustom currentCategory,
+    required TimerCategoryCustom buttonCategory,
   }) {
     return currentCategory == buttonCategory
         ? AppColors.white
@@ -43,8 +43,8 @@ class TimerCategoryButtonConfig {
   }
 
   static Color text({
-    required TimerCategory currentCategory,
-    required TimerCategory buttonCategory,
+    required TimerCategoryCustom currentCategory,
+    required TimerCategoryCustom buttonCategory,
   }) {
     return currentCategory == buttonCategory
         ? AppColors.primary
