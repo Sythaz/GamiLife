@@ -6,6 +6,7 @@ import '../../../core/enums/enums_button_category.dart';
 import '../../widgets/category_button.dart';
 import '../../widgets/container_category_button.dart';
 import '../../widgets/search_field.dart';
+import 'widgets/date_filter_section.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -16,8 +17,11 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   final TextEditingController _searchController = TextEditingController();
+  bool _isDateFilterExpanded = false;
 
   ActivityCategory _currentActivityCategory = ActivityCategory.all;
+
+  DateTime? _selectedDateFilter;
 
   @override
   void dispose() {
@@ -47,9 +51,10 @@ class _ProgressPageState extends State<ProgressPage> {
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SearchField(searchController: _searchController),
-            SizedBox(height: 16),
+            SizedBox(height: 10),
             ContainerCategoryButton(
               currentCategory: _currentActivityCategory,
               children: [
@@ -130,6 +135,31 @@ class _ProgressPageState extends State<ProgressPage> {
                   },
                 ),
               ],
+            ),
+            SizedBox(height: 10),
+            DateFilterSection(
+              isDateFilterExpanded: _isDateFilterExpanded,
+              onToggle: (bool isExpanded) {
+                setState(() {
+                  _isDateFilterExpanded = isExpanded;
+                });
+              },
+              onDateSelect: (DateTime date) {
+                setState(() {
+                  if (_selectedDateFilter == date) {
+                    // Jika date yang dipilih sama dengan yang sebelumnya,
+                    // maka set selectedDateFilter menjadi null
+                    _selectedDateFilter = null;
+                    // Dan set isDateFilterExpanded menjadi false/menutup
+                    _isDateFilterExpanded = false;
+                  } else {
+                    _selectedDateFilter = date;
+                  }
+
+                  print('Selected date: $_selectedDateFilter');
+                  print('Date value: $date');
+                });
+              },
             ),
             Expanded(child: Center(child: Text('Konten di sini'))),
           ],
