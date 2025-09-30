@@ -138,6 +138,7 @@ class _ProgressPageState extends State<ProgressPage> {
             ),
             SizedBox(height: 10),
             DateFilterSection(
+              selectedDate: _selectedDateFilter,
               isDateFilterExpanded: _isDateFilterExpanded,
               onToggle: (bool isExpanded) {
                 setState(() {

@@ -6,12 +6,14 @@ import '../../../../core/constants/colors.dart';
 class DateFilterSection extends StatelessWidget {
   final Function(bool) onToggle;
   final Function(DateTime) onDateSelect;
+  final DateTime? selectedDate;
 
   const DateFilterSection({
     super.key,
     required bool isDateFilterExpanded,
     required this.onToggle,
     required this.onDateSelect,
+    required this.selectedDate,
   }) : _isDateFilterExpanded = isDateFilterExpanded;
 
   final bool _isDateFilterExpanded;
@@ -21,29 +23,37 @@ class DateFilterSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
-          onTap: () => onToggle(!_isDateFilterExpanded),
-          splashFactory: NoSplash.splashFactory,
-          highlightColor: Colors.transparent,
-          splashColor: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.only(right: 10, bottom: 5),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  _isDateFilterExpanded
-                      ? Icons.arrow_drop_up
-                      : Icons.arrow_drop_down,
-                  color: AppColors.primary,
+        Row(
+          children: [
+            InkWell(
+              onTap: () => onToggle(!_isDateFilterExpanded),
+              splashFactory: NoSplash.splashFactory,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.only(right: 10, bottom: 5),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      selectedDate != null
+                          ? Icons.filter_alt
+                          : Icons.filter_alt_off,
+                      size: 20,
+                      color: selectedDate != null
+                          ? AppColors.primary
+                          : AppColors.gray2,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Filter by Date',
+                      style: TextStyle(color: AppColors.gray2),
+                    ),
+                  ],
                 ),
-                Text(
-                  'Filters by Date',
-                  style: TextStyle(color: AppColors.gray2),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
         SizedBox(
           width: double.infinity,
