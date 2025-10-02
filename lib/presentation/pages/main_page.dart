@@ -3,6 +3,7 @@ import 'package:gamilife/core/constants/colors.dart';
 import 'package:gamilife/presentation/pages/home/home_page.dart';
 import 'package:gamilife/presentation/pages/progress/progress_page.dart';
 import 'package:gamilife/presentation/pages/timer/timer_page.dart';
+import 'package:go_router/go_router.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -39,7 +40,9 @@ class _MainPageState extends State<MainPage> {
       extendBody: true,
       body: IndexedStack(index: _selectedIndex, children: _widgets),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          context.pushNamed('add-progress');
+        },
         backgroundColor: AppColors.primary,
         elevation: 5,
         shape: const CircleBorder(),

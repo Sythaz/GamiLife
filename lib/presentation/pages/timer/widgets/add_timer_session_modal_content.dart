@@ -4,6 +4,7 @@ import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/enums/enums_button_category.dart';
 import 'package:gamilife/presentation/widgets/category_button.dart';
 import 'package:gamilife/presentation/widgets/container_category_button.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/colors.dart';
 
@@ -42,7 +43,7 @@ class _AddTimerModalContentState extends State<AddTimerModalContent> {
                         child: IconButton(
                           iconSize: 32,
                           onPressed: () {
-                            Navigator.pop(context);
+                            context.pop();
                           },
                           icon: Icon(
                             Icons.close,

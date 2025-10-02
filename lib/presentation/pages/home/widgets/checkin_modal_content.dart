@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/presentation/pages/home/widgets/daily_checkin_xp.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/colors.dart';
 
@@ -19,7 +20,7 @@ class CheckInModalContent extends StatelessWidget {
           IconButton(
             iconSize: 32,
             onPressed: () {
-              Navigator.pop(context);
+              context.pop();
             },
             icon: Icon(
               Icons.close,
