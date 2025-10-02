@@ -188,122 +188,124 @@ class _TimerPageState extends State<TimerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.primary,
-      body: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          child: Center(
-            child: Column(
-              children: [
-                Text(
-                  'Timer Page',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.white,
-                  ),
-                ),
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        centerTitle: true,
+        // Sejak Material3 saat di scroll akan ada efek scrolledUnder, sehingga kita nonaktifkan saja
+        scrolledUnderElevation: 0,
+        title: Text(
+          'Timer Page',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.white,
+          ),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Center(
+          child: Column(
+            children: [
+              // Widget untuk menampilkan waktu
+              TimerDisplayWidget(
+                isRunning: _isRunning,
+                timerEndTime: _timerEndTime,
+                remaining: _currentMode == TimerCategory.popular
+                    ? _remainingPopular
+                    : _remainingCustom,
+                onTap: () {
+                  // TODO: Tambahkan date/hour picker
+                },
+              ),
 
-                // Widget untuk menampilkan waktu
-                TimerDisplayWidget(
-                  isRunning: _isRunning,
-                  timerEndTime: _timerEndTime,
-                  remaining: _currentMode == TimerCategory.popular
-                      ? _remainingPopular
-                      : _remainingCustom,
-                  onTap: () {
-                    // TODO: Tambahkan date/hour picker
-                  },
-                ),
+              // Widget untuk menampilkan controller timer (start, pause, reset, next)
+              TimerControllerWidget(
+                currentMode: _currentMode,
+                isRunning: _isRunning,
+                startTimer: _startTimer,
+                pauseTimer: _pauseTimer,
+                resetTimer: _resetTimer,
+                nextSession: _nextSession,
+                remainingCustom: _remainingCustom,
+                remainingPopular: _remainingPopular,
+              ),
 
-                // Widget untuk menampilkan controller timer (start, pause, reset, next)
-                TimerControllerWidget(
-                  currentMode: _currentMode,
-                  isRunning: _isRunning,
-                  startTimer: _startTimer,
-                  pauseTimer: _pauseTimer,
-                  resetTimer: _resetTimer,
-                  nextSession: _nextSession,
-                  remainingCustom: _remainingCustom,
-                  remainingPopular: _remainingPopular,
-                ),
-
-                ContainerCategoryButton(
-                  currentCategory: _currentMode,
-                  children: [
-                    CustomCategoryButton(
-                      label: 'Popular',
+              ContainerCategoryButton(
+                currentCategory: _currentMode,
+                children: [
+                  CustomCategoryButton(
+                    label: 'Popular',
+                    currentCategory: _currentMode,
+                    buttonCategory: TimerCategory.popular,
+                    buttonColorLogic: TimerCategoryButtonConfig.background(
                       currentCategory: _currentMode,
                       buttonCategory: TimerCategory.popular,
-                      buttonColorLogic: TimerCategoryButtonConfig.background(
-                        currentCategory: _currentMode,
-                        buttonCategory: TimerCategory.popular,
-                      ),
-                      textColorLogic: TimerCategoryButtonConfig.text(
-                        currentCategory: _currentMode,
-                        buttonCategory: TimerCategory.popular,
-                      ),
-                      onSelected: (value) {
-                        _pauseTimer();
-                        setState(() {
-                          // Set [_currentMode] menjadi TimerCategory.popular
-                          // nilai value sama dengan buttonCategory
-                          _currentMode = value;
-                        });
-                      },
                     ),
-                    CustomCategoryButton(
-                      label: 'Custom',
+                    textColorLogic: TimerCategoryButtonConfig.text(
+                      currentCategory: _currentMode,
+                      buttonCategory: TimerCategory.popular,
+                    ),
+                    onSelected: (value) {
+                      _pauseTimer();
+                      setState(() {
+                        // Set [_currentMode] menjadi TimerCategory.popular
+                        // nilai value sama dengan buttonCategory
+                        _currentMode = value;
+                      });
+                    },
+                  ),
+                  CustomCategoryButton(
+                    label: 'Custom',
+                    currentCategory: _currentMode,
+                    buttonCategory: TimerCategory.custom,
+                    buttonColorLogic: TimerCategoryButtonConfig.background(
                       currentCategory: _currentMode,
                       buttonCategory: TimerCategory.custom,
-                      buttonColorLogic: TimerCategoryButtonConfig.background(
-                        currentCategory: _currentMode,
-                        buttonCategory: TimerCategory.custom,
-                      ),
-                      textColorLogic: TimerCategoryButtonConfig.text(
-                        currentCategory: _currentMode,
-                        buttonCategory: TimerCategory.custom,
-                      ),
-                      onSelected: (value) {
-                        _pauseTimer();
-                        setState(() {
-                          // Set [_currentMode] menjadi TimerCategory.custom
-                          // nilai value sama dengan buttonCategory
-                          _currentMode = value;
-                        });
-                      },
                     ),
-                  ],
-                ),
+                    textColorLogic: TimerCategoryButtonConfig.text(
+                      currentCategory: _currentMode,
+                      buttonCategory: TimerCategory.custom,
+                    ),
+                    onSelected: (value) {
+                      _pauseTimer();
+                      setState(() {
+                        // Set [_currentMode] menjadi TimerCategory.custom
+                        // nilai value sama dengan buttonCategory
+                        _currentMode = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
 
-                SizedBox(height: 16),
-                _currentMode == TimerCategory.custom && _customSession.isEmpty
-                    ? AddSessionButton()
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: _currentMode == TimerCategory.popular
-                              ? _popularSession.length
-                              : _customSession.length,
-                          itemBuilder: (context, index) {
-                            return _currentMode == TimerCategory.custom &&
-                                    index == _customSession.length - 1
-                                ? AddSessionButton()
-                                : TimerSessionContainer(
-                                    index: index,
-                                    changeSession: () => _changeSession(index),
-                                    currentMode: _currentMode,
-                                    currentSessionIndexPopular:
-                                        _currentSessionIndexPopular,
-                                    currentSessionIndexCustom:
-                                        _currentSessionIndexCustom,
-                                    popularSession: _popularSession,
-                                    customSession: _customSession,
-                                  );
-                          },
-                        ),
+              SizedBox(height: 16),
+              _currentMode == TimerCategory.custom && _customSession.isEmpty
+                  ? AddSessionButton()
+                  : Expanded(
+                      child: ListView.builder(
+                        itemCount: _currentMode == TimerCategory.popular
+                            ? _popularSession.length
+                            : _customSession.length,
+                        itemBuilder: (context, index) {
+                          return _currentMode == TimerCategory.custom &&
+                                  index == _customSession.length - 1
+                              ? AddSessionButton()
+                              : TimerSessionContainer(
+                                  index: index,
+                                  changeSession: () => _changeSession(index),
+                                  currentMode: _currentMode,
+                                  currentSessionIndexPopular:
+                                      _currentSessionIndexPopular,
+                                  currentSessionIndexCustom:
+                                      _currentSessionIndexCustom,
+                                  popularSession: _popularSession,
+                                  customSession: _customSession,
+                                );
+                        },
                       ),
-              ],
-            ),
+                    ),
+            ],
           ),
         ),
       ),
