@@ -91,14 +91,24 @@ class DateFilterSection extends StatelessWidget {
             crossFadeState: _isDateFilterExpanded
                 ? CrossFadeState.showFirst
                 : CrossFadeState.showSecond,
-            firstChild: CalendarDaySlotNavigator(
-              activeColor: AppColors.primary,
-              slotLength: 5,
-              dayBoxHeightAspectRatio: 6,
-              monthYearTabBorderRadius: 10,
-              dayBoxBorderRadius: 12,
-              dayDisplayMode: DayDisplayMode.inDateBox,
-              onDateSelect: onDateSelect,
+            firstChild: Column(
+              children: [
+                CalendarDaySlotNavigator(
+                  activeColor: AppColors.primary,
+                  slotLength: 5,
+                  dayBoxHeightAspectRatio: 6,
+                  monthYearTabBorderRadius: 10,
+                  dayBoxBorderRadius: 12,
+                  dayDisplayMode: DayDisplayMode.inDateBox,
+                  onDateSelect: onDateSelect,
+                ),
+                const SizedBox(height: 10),
+                Divider(
+                  radius: BorderRadius.circular(50),
+                  color: AppColors.gray2,
+                  thickness: 0.4,
+                ),
+              ],
             ),
             // Menggunakan SizedBox.shrink() dan bukan Container() maupun SizedBox()
             // karena SizedBox.shrink() paling aman dan ringan untuk "tidak menampilkan apa-apa"

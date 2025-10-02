@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/constants/colors.dart';
+import 'package:gamilife/presentation/widgets/timeline_recent_activities.dart';
 
 import '../../../core/enums/enums_button_category.dart';
 import '../../widgets/category_button.dart';
@@ -31,139 +32,190 @@ class _ProgressPageState extends State<ProgressPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.white,
-      appBar: AppBar(
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Scaffold(
         backgroundColor: AppColors.white,
-        elevation: 2,
-        shadowColor: Colors.black.withAlpha((0.2 * 255).toInt()),
-        surfaceTintColor: Colors.transparent,
-        centerTitle: true,
-        title: const Text(
-          'Progress Page',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+        appBar: AppBar(
+          backgroundColor: AppColors.white,
+          elevation: 2,
+          shadowColor: Colors.black.withAlpha((0.2 * 255).toInt()),
+          surfaceTintColor: Colors.transparent,
+          centerTitle: true,
+          title: const Text(
+            'Progress Page',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppColors.primary,
+            ),
           ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SearchField(searchController: _searchController),
-            SizedBox(height: 10),
-            ContainerCategoryButton(
-              currentCategory: _currentActivityCategory,
-              children: [
-                CustomCategoryButton(
-                  label: 'All',
-                  currentCategory: _currentActivityCategory,
-                  buttonCategory: ActivityCategory.all,
-                  buttonColorLogic: ProgressCategoryButtonConfig.background(
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SearchField(searchController: _searchController),
+              SizedBox(height: 10),
+              ContainerCategoryButton(
+                currentCategory: _currentActivityCategory,
+                children: [
+                  CustomCategoryButton(
+                    label: 'All',
+                    currentCategory: _currentActivityCategory,
                     buttonCategory: ActivityCategory.all,
-                    currentCategory: _currentActivityCategory,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      buttonCategory: ActivityCategory.all,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      buttonCategory: ActivityCategory.all,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    onSelected: (value) {
+                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
+                      setState(() {
+                        _currentActivityCategory = value;
+                      });
+                    },
                   ),
-                  textColorLogic: ProgressCategoryButtonConfig.text(
-                    buttonCategory: ActivityCategory.all,
+                  CustomCategoryButton(
+                    label: 'Activity',
                     currentCategory: _currentActivityCategory,
-                  ),
-                  onSelected: (value) {
-                    // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                    setState(() {
-                      _currentActivityCategory = value;
-                    });
-                  },
-                ),
-                CustomCategoryButton(
-                  label: 'Activity',
-                  currentCategory: _currentActivityCategory,
-                  buttonCategory: ActivityCategory.activity,
-                  buttonColorLogic: ProgressCategoryButtonConfig.background(
                     buttonCategory: ActivityCategory.activity,
-                    currentCategory: _currentActivityCategory,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      buttonCategory: ActivityCategory.activity,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      buttonCategory: ActivityCategory.activity,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    onSelected: (value) {
+                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
+                      setState(() {
+                        _currentActivityCategory = value;
+                      });
+                    },
                   ),
-                  textColorLogic: ProgressCategoryButtonConfig.text(
-                    buttonCategory: ActivityCategory.activity,
+                  CustomCategoryButton(
+                    label: 'Summary',
                     currentCategory: _currentActivityCategory,
-                  ),
-                  onSelected: (value) {
-                    // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                    setState(() {
-                      _currentActivityCategory = value;
-                    });
-                  },
-                ),
-                CustomCategoryButton(
-                  label: 'Summary',
-                  currentCategory: _currentActivityCategory,
-                  buttonCategory: ActivityCategory.summary,
-                  buttonColorLogic: ProgressCategoryButtonConfig.background(
                     buttonCategory: ActivityCategory.summary,
-                    currentCategory: _currentActivityCategory,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      buttonCategory: ActivityCategory.summary,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      buttonCategory: ActivityCategory.summary,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    onSelected: (value) {
+                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
+                      setState(() {
+                        _currentActivityCategory = value;
+                      });
+                    },
                   ),
-                  textColorLogic: ProgressCategoryButtonConfig.text(
-                    buttonCategory: ActivityCategory.summary,
+                  CustomCategoryButton(
+                    label: 'Todo',
                     currentCategory: _currentActivityCategory,
-                  ),
-                  onSelected: (value) {
-                    // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                    setState(() {
-                      _currentActivityCategory = value;
-                    });
-                  },
-                ),
-                CustomCategoryButton(
-                  label: 'Todo',
-                  currentCategory: _currentActivityCategory,
-                  buttonCategory: ActivityCategory.todo,
-                  buttonColorLogic: ProgressCategoryButtonConfig.background(
                     buttonCategory: ActivityCategory.todo,
-                    currentCategory: _currentActivityCategory,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      buttonCategory: ActivityCategory.todo,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      buttonCategory: ActivityCategory.todo,
+                      currentCategory: _currentActivityCategory,
+                    ),
+                    onSelected: (value) {
+                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
+                      setState(() {
+                        _currentActivityCategory = value;
+                      });
+                    },
                   ),
-                  textColorLogic: ProgressCategoryButtonConfig.text(
-                    buttonCategory: ActivityCategory.todo,
-                    currentCategory: _currentActivityCategory,
-                  ),
-                  onSelected: (value) {
-                    // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                    setState(() {
-                      _currentActivityCategory = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            DateFilterSection(
-              selectedDate: _selectedDateFilter,
-              isDateFilterExpanded: _isDateFilterExpanded,
-              onToggle: (bool isExpanded) {
-                setState(() {
-                  _isDateFilterExpanded = isExpanded;
-                });
-              },
-              onDateSelect: (DateTime date) {
-                setState(() {
-                  if (_selectedDateFilter == date) {
-                    // Jika date yang dipilih sama dengan yang sebelumnya,
-                    // maka set selectedDateFilter menjadi null
-                    _selectedDateFilter = null;
-                    // Dan set isDateFilterExpanded menjadi false/menutup
-                    _isDateFilterExpanded = false;
-                  } else {
-                    _selectedDateFilter = date;
-                  }
+                ],
+              ),
+              SizedBox(height: 10),
+              DateFilterSection(
+                selectedDate: _selectedDateFilter,
+                isDateFilterExpanded: _isDateFilterExpanded,
+                onToggle: (bool isExpanded) {
+                  setState(() {
+                    _isDateFilterExpanded = isExpanded;
+                  });
+                },
+                onDateSelect: (DateTime date) {
+                  setState(() {
+                    if (_selectedDateFilter == date) {
+                      // Jika date yang dipilih sama dengan yang sebelumnya,
+                      // maka set selectedDateFilter menjadi null
+                      _selectedDateFilter = null;
+                      // Dan set isDateFilterExpanded menjadi false/menutup
+                      _isDateFilterExpanded = false;
+                    } else {
+                      _selectedDateFilter = date;
+                    }
 
-                  print('Selected date: $_selectedDateFilter');
-                  print('Date value: $date');
-                });
-              },
-            ),
-            Expanded(child: Center(child: Text('Konten di sini'))),
-          ],
+                    print('Selected date: $_selectedDateFilter');
+                    print('Date value: $date');
+                  });
+                },
+              ),
+              Expanded(
+                child: ListView.builder(
+                  // TODO: Ganti dengan jumlah data asli setelah ada
+                  itemCount: 10,
+                  itemBuilder: (context, index) {
+                    // TODO: Ganti dengan isi data asli setelah ada
+                    if (index == 0) {
+                      return TimelineRecentActivities(
+                        time: '08:30',
+                        date: '2025/09/28',
+                        link: 'https://www.youtube.com/watch?v=jq7zj8jJFso',
+                        description:
+                            'Jogging selama 30 menit bersama teman-teman',
+                        skillType: SkillType.activity,
+                        skill: ['VIT', 'Social'],
+                        point: '2',
+                      );
+                    } else if (index == 1) {
+                      return TimelineRecentActivities(
+                        time: '08:30',
+                        date: '2025/09/28',
+                        description:
+                            'Jogging selama 30 menit bersama teman-teman',
+                        skillType: SkillType.summary,
+                        point: '1',
+                      );
+                    } else if (index == 2) {
+                      return TimelineRecentActivities(
+                        time: '08:30',
+                        date: '2025/09/28',
+                        description:
+                            'Jogging selama 30 menit bersama teman-teman',
+                        skillType: SkillType.todo,
+                        point: '1',
+                      );
+                    }
+                    return TimelineRecentActivities(
+                      time: '08:30',
+                      date: '2025/09/28',
+                      description:
+                          'Jogging selama 30 menit bersama teman-teman',
+                      skillType: SkillType.activity,
+                      skill: ['Social', 'VIT'],
+                      point: '1',
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
