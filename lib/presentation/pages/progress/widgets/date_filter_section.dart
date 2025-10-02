@@ -20,34 +20,62 @@ class DateFilterSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isFilter = selectedDate != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             InkWell(
+              borderRadius: BorderRadius.circular(10),
               onTap: () => onToggle(!_isDateFilterExpanded),
-              splashFactory: NoSplash.splashFactory,
-              highlightColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.only(right: 10, bottom: 5),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
-                      selectedDate != null
-                          ? Icons.filter_alt
-                          : Icons.filter_alt_off,
+                      isFilter ? Icons.filter_alt : Icons.filter_alt_off,
                       size: 20,
-                      color: selectedDate != null
-                          ? AppColors.primary
-                          : AppColors.gray2,
+                      color: isFilter ? AppColors.primary : AppColors.gray2,
                     ),
                     const SizedBox(width: 5),
                     Text(
                       'Filter by Date',
-                      style: TextStyle(color: AppColors.gray2),
+                      style: TextStyle(
+                        color: isFilter ? AppColors.primary : AppColors.gray2,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            InkWell(
+              borderRadius: BorderRadius.circular(10),
+              onTap: () => {
+                if (isFilter)
+                  {onDateSelect(selectedDate!)}
+                else
+                  _isDateFilterExpanded == false,
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 3),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.restart_alt_rounded,
+                      size: 20,
+                      color: isFilter ? AppColors.primary : AppColors.gray2,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      'Reset Filter',
+                      style: TextStyle(
+                        color: isFilter ? AppColors.primary : AppColors.gray2,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),
@@ -55,6 +83,7 @@ class DateFilterSection extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 10),
         SizedBox(
           width: double.infinity,
           child: AnimatedCrossFade(
