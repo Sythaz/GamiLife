@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gamilife/core/config/category_button_config.dart';
+import 'package:gamilife/core/enums/enums_button_category.dart';
+import 'package:gamilife/presentation/widgets/category_button.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/colors.dart';
+import '../../widgets/container_category_button.dart';
 
 class AddProgressPage extends StatefulWidget {
   const AddProgressPage({super.key});
@@ -11,6 +15,9 @@ class AddProgressPage extends StatefulWidget {
 }
 
 class _AddProgressPageState extends State<AddProgressPage> {
+  AddProgressActivityCategory _currentCategory =
+      AddProgressActivityCategory.activity;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -66,7 +73,88 @@ class _AddProgressPageState extends State<AddProgressPage> {
             ),
           ],
         ),
-        body: const Center(child: Text('Add Progress Page')),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ContainerCategoryButton(
+                currentCategory: _currentCategory,
+                children: [
+                  CustomCategoryButton(
+                    label: 'Activity',
+                    currentCategory: _currentCategory,
+                    buttonCategory: AddProgressActivityCategory.activity,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.activity,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.activity,
+                    ),
+                    onSelected: (activityValue) {
+                      setState(() {
+                        _currentCategory = activityValue;
+                      });
+                    },
+                  ),
+                  CustomCategoryButton(
+                    label: 'Summary',
+                    currentCategory: _currentCategory,
+                    buttonCategory: AddProgressActivityCategory.summary,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.summary,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.summary,
+                    ),
+                    onSelected: (activityValue) {
+                      setState(() {
+                        _currentCategory = activityValue;
+                      });
+                    },
+                  ),
+                  CustomCategoryButton(
+                    label: 'To-do',
+                    currentCategory: _currentCategory,
+                    buttonCategory: AddProgressActivityCategory.todo,
+                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.todo,
+                    ),
+                    textColorLogic: ProgressCategoryButtonConfig.text(
+                      currentCategory: _currentCategory,
+                      buttonCategory: AddProgressActivityCategory.todo,
+                    ),
+                    onSelected: (activityValue) {
+                      setState(() {
+                        _currentCategory = activityValue;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Text(
+                _currentCategory == AddProgressActivityCategory.activity
+                    ? '- What have you done?'
+                    : _currentCategory == AddProgressActivityCategory.summary
+                    ? '- Let\'s share your reflections!'
+                    : '- What are you planning to do?',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppColors.gray3,
+                ),
+              ),
+              TextFormField(
+                
+              )
+            ],
+          ),
+        ),
       ),
     );
   }

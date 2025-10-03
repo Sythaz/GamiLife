@@ -3,28 +3,28 @@ import 'dart:ui';
 import '../constants/colors.dart';
 import '../enums/enums_button_category.dart';
 
-class ProgressCategoryButtonConfig {
-  static Color background({
-    required ActivityCategory currentCategory,
-    required ActivityCategory buttonCategory,
+class ProgressCategoryButtonConfig<T extends Enum> {
+  static Color background<T extends Enum>({
+    required T currentCategory,
+    required T buttonCategory,
   }) {
     if (buttonCategory != currentCategory) return AppColors.white;
 
     switch (buttonCategory) {
-      case ActivityCategory.all:
-        return AppColors.primary;
-      case ActivityCategory.activity:
+      case ActivityCategory.activity || AddProgressActivityCategory.activity:
         return AppColors.secondary;
-      case ActivityCategory.summary:
+      case ActivityCategory.summary || AddProgressActivityCategory.summary:
         return AppColors.yellowAccent;
-      case ActivityCategory.todo:
+      case ActivityCategory.todo || AddProgressActivityCategory.todo:
         return AppColors.purpleAccent;
+      default:
+        return AppColors.primary;
     }
   }
 
-  static Color text({
-    required ActivityCategory currentCategory,
-    required ActivityCategory buttonCategory,
+  static Color text<T extends Enum>({
+    required T currentCategory,
+    required T buttonCategory,
   }) {
     return buttonCategory == currentCategory
         ? AppColors.white

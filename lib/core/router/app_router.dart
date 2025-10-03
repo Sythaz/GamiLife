@@ -7,7 +7,7 @@ import '../../presentation/pages/timer/timer_page.dart';
 
 class AppRouter {
   static final router = GoRouter(
-    initialLocation: '/',
+    initialLocation: '/home',
     // redirect: (context, state) {
     //   // Cek isLogin
     //   // final isLoggedIn = false;
