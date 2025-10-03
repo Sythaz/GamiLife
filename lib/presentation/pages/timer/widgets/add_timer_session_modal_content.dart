@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/enums/enums_button_category.dart';
-import 'package:gamilife/presentation/widgets/category_button.dart';
+import 'package:gamilife/presentation/widgets/custom_category_button.dart';
 import 'package:gamilife/presentation/widgets/container_category_button.dart';
 import 'package:go_router/go_router.dart';
 

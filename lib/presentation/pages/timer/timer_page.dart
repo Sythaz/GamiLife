@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/presentation/pages/timer/helpers/timer_session.dart';
-import 'package:gamilife/presentation/widgets/category_button.dart';
+import 'package:gamilife/presentation/widgets/custom_category_button.dart';
 import 'package:gamilife/presentation/widgets/container_category_button.dart';
 
 import '../../../core/constants/colors.dart';

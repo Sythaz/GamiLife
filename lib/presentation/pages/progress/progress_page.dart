@@ -4,7 +4,7 @@ import 'package:gamilife/core/constants/colors.dart';
 import 'package:gamilife/presentation/widgets/timeline_recent_activities.dart';
 
 import '../../../core/enums/enums_button_category.dart';
-import '../../widgets/category_button.dart';
+import '../../widgets/custom_category_button.dart';
 import '../../widgets/container_category_button.dart';
 import '../../widgets/search_field.dart';
 import 'widgets/date_filter_section.dart';
