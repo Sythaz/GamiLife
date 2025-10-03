@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/enums/enums_button_category.dart';
-import 'package:gamilife/presentation/widgets/category_button.dart';
+import 'package:gamilife/presentation/widgets/custom_category_button.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/colors.dart';
@@ -75,84 +76,280 @@ class _AddProgressPageState extends State<AddProgressPage> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ContainerCategoryButton(
-                currentCategory: _currentCategory,
-                children: [
-                  CustomCategoryButton(
-                    label: 'Activity',
-                    currentCategory: _currentCategory,
-                    buttonCategory: AddProgressActivityCategory.activity,
-                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ContainerCategoryButton(
+                  currentCategory: _currentCategory,
+                  children: [
+                    CustomCategoryButton(
+                      label: 'Activity',
                       currentCategory: _currentCategory,
                       buttonCategory: AddProgressActivityCategory.activity,
+                      buttonColorLogic: ProgressCategoryButtonConfig.background(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.activity,
+                      ),
+                      textColorLogic: ProgressCategoryButtonConfig.text(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.activity,
+                      ),
+                      onSelected: (activityValue) {
+                        setState(() {
+                          _currentCategory = activityValue;
+                        });
+                      },
                     ),
-                    textColorLogic: ProgressCategoryButtonConfig.text(
-                      currentCategory: _currentCategory,
-                      buttonCategory: AddProgressActivityCategory.activity,
-                    ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
-                  ),
-                  CustomCategoryButton(
-                    label: 'Summary',
-                    currentCategory: _currentCategory,
-                    buttonCategory: AddProgressActivityCategory.summary,
-                    buttonColorLogic: ProgressCategoryButtonConfig.background(
-                      currentCategory: _currentCategory,
-                      buttonCategory: AddProgressActivityCategory.summary,
-                    ),
-                    textColorLogic: ProgressCategoryButtonConfig.text(
+                    CustomCategoryButton(
+                      label: 'Summary',
                       currentCategory: _currentCategory,
                       buttonCategory: AddProgressActivityCategory.summary,
+                      buttonColorLogic: ProgressCategoryButtonConfig.background(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.summary,
+                      ),
+                      textColorLogic: ProgressCategoryButtonConfig.text(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.summary,
+                      ),
+                      onSelected: (activityValue) {
+                        setState(() {
+                          _currentCategory = activityValue;
+                        });
+                      },
                     ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
-                  ),
-                  CustomCategoryButton(
-                    label: 'To-do',
-                    currentCategory: _currentCategory,
-                    buttonCategory: AddProgressActivityCategory.todo,
-                    buttonColorLogic: ProgressCategoryButtonConfig.background(
+                    CustomCategoryButton(
+                      label: 'To-do',
                       currentCategory: _currentCategory,
                       buttonCategory: AddProgressActivityCategory.todo,
+                      buttonColorLogic: ProgressCategoryButtonConfig.background(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.todo,
+                      ),
+                      textColorLogic: ProgressCategoryButtonConfig.text(
+                        currentCategory: _currentCategory,
+                        buttonCategory: AddProgressActivityCategory.todo,
+                      ),
+                      onSelected: (activityValue) {
+                        setState(() {
+                          _currentCategory = activityValue;
+                        });
+                      },
                     ),
-                    textColorLogic: ProgressCategoryButtonConfig.text(
-                      currentCategory: _currentCategory,
-                      buttonCategory: AddProgressActivityCategory.todo,
-                    ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
-              Text(
-                _currentCategory == AddProgressActivityCategory.activity
-                    ? '- What have you done?'
-                    : _currentCategory == AddProgressActivityCategory.summary
-                    ? '- Let\'s share your reflections!'
-                    : '- What are you planning to do?',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.gray3,
+                  ],
                 ),
-              ),
-              TextFormField(
-                
-              )
-            ],
+                SizedBox(height: 16),
+                Text(
+                  _currentCategory == AddProgressActivityCategory.activity
+                      ? '- What have you done?'
+                      : _currentCategory == AddProgressActivityCategory.summary
+                      ? '- Let\'s share your reflections!'
+                      : '- What are you planning to do?',
+                  style: const TextStyle(fontSize: 12, color: AppColors.gray3),
+                ),
+                TextFormField(
+                  cursorColor: AppColors.primary,
+                  minLines: 5,
+                  maxLines: null,
+                  style: const TextStyle(fontSize: 16),
+                  decoration: const InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: AppColors.gray0, width: 2),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.primary,
+                        width: 2,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Tambahkan logic untuk memilih tanggal
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.primary),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 8,
+                              children: [
+                                Icon(
+                                  Icons.event_available_outlined,
+                                  size: 26,
+                                  color: AppColors.primary,
+                                ),
+                                Text(
+                                  'Rabu, 24 September 2025',
+                                  style: TextStyle(
+                                    color: AppColors.dark,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Tambahkan logic untuk memilih hari ini
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Today',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  spacing: 10,
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Tambahkan logic untuk memilih tanggal
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: AppColors.gray2),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
+                            child: Row(
+                              spacing: 8,
+                              children: [
+                                Icon(
+                                  Icons.schedule,
+                                  size: 26,
+                                  color: AppColors.gray2,
+                                ),
+                                Text(
+                                  'Time',
+                                  style: TextStyle(
+                                    color: AppColors.gray2,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: InkWell(
+                        onTap: () {
+                          // TODO: Tambahkan logic untuk memilih hari ini
+                        },
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          width: double.infinity,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: AppColors.primary,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: const Center(
+                            child: Text(
+                              'Now',
+                              style: TextStyle(
+                                color: AppColors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 16),
+                SizedBox(
+                  height: 40,
+                  child: TextField(
+                    style: TextStyle(color: AppColors.dark, fontSize: 12),
+                    decoration: InputDecoration(
+                      isDense: true, // Agar TextField lebih kecil
+                      hint: Text(
+                        'Link (optional)',
+                        style: TextStyle(color: AppColors.gray2, fontSize: 12),
+                      ),
+                      prefixIcon: Padding(
+                        padding: const EdgeInsets.only(left: 8, right: 8),
+                        child: SvgPicture.asset(
+                          'assets/icons/link_box.svg',
+                          colorFilter: ColorFilter.mode(
+                            AppColors.gray2,
+                            BlendMode.srcIn,
+                          ),
+                        ),
+                      ),
+                      prefixIconConstraints: BoxConstraints(
+                        minWidth: 26,
+                        minHeight: 26,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(color: AppColors.gray2),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide(
+                          color: AppColors.primary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 8,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
