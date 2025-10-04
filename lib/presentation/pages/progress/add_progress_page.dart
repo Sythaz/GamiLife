@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/colors.dart';
 import '../../widgets/container_category_button.dart';
+import 'widgets/skill_chip_selection.dart';
 
 class AddProgressPage extends StatefulWidget {
   const AddProgressPage({super.key});
@@ -18,6 +19,8 @@ class AddProgressPage extends StatefulWidget {
 class _AddProgressPageState extends State<AddProgressPage> {
   AddProgressActivityCategory _currentCategory =
       AddProgressActivityCategory.activity;
+
+  List<String?> selectedSkills = [];
 
   @override
   Widget build(BuildContext context) {
@@ -309,6 +312,7 @@ class _AddProgressPageState extends State<AddProgressPage> {
                 SizedBox(
                   height: 40,
                   child: TextField(
+                    keyboardType: TextInputType.url,
                     style: TextStyle(color: AppColors.dark, fontSize: 12),
                     decoration: InputDecoration(
                       isDense: true, // Agar TextField lebih kecil
@@ -321,6 +325,8 @@ class _AddProgressPageState extends State<AddProgressPage> {
                         child: SvgPicture.asset(
                           'assets/icons/link_box.svg',
                           colorFilter: ColorFilter.mode(
+                            // TODO: Saat controller link tidak ada isi maka warna gray2
+                            // tapi saat sudah disii jadi primary
                             AppColors.gray2,
                             BlendMode.srcIn,
                           ),
@@ -337,6 +343,7 @@ class _AddProgressPageState extends State<AddProgressPage> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
+                          // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
                           color: AppColors.primary,
                           width: 2,
                         ),
@@ -347,6 +354,15 @@ class _AddProgressPageState extends State<AddProgressPage> {
                       ),
                     ),
                   ),
+                ),
+                SizedBox(height: 16),
+                SkillChipSelection(
+                  selectedSkills: selectedSkills,
+                  onSelected: (selectedSkill) {
+                    setState(() {
+                      selectedSkills = selectedSkill;
+                    });
+                  },
                 ),
               ],
             ),
