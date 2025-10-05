@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gamilife/core/config/skill_point_config.dart';
 
 import '../../../../core/constants/colors.dart';
 import '../../home/widgets/skill_point_card.dart';
@@ -53,7 +54,7 @@ class SkillChipSelection extends StatelessWidget {
                     ),
                   ),
                   selected: selectedSkills.contains(skill.name),
-                  selectedColor: AppColors.primary,
+                  selectedColor: getSkillPointColor(skill.name),
                   backgroundColor: AppColors.gray2,
                   onSelected: (bool selected) {
                     // Kita buat copy dari List selectedSkills
