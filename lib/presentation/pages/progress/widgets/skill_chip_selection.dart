@@ -25,6 +25,7 @@ class SkillChipSelection extends StatelessWidget {
             color: selectedSkills.isNotEmpty
                 ? AppColors.primary
                 : AppColors.gray2,
+            fontSize: 12,
             fontWeight: FontWeight.bold,
           ),
         ),

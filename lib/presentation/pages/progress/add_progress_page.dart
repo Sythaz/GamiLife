@@ -21,6 +21,7 @@ class _AddProgressPageState extends State<AddProgressPage> {
       AddProgressActivityCategory.activity;
 
   List<String?> selectedSkills = [];
+  Map<String, int> selectedSkillsPoint = {};
 
   @override
   Widget build(BuildContext context) {
@@ -358,17 +359,45 @@ class _AddProgressPageState extends State<AddProgressPage> {
                 SizedBox(height: 16),
                 SkillChipSelection(
                   selectedSkills: selectedSkills,
-                  onSelected: (selectedSkill) {
+                  onSelected: (newSelectedSkillsList) {
                     setState(() {
-                      selectedSkills = selectedSkill;
+                      for (String skillName in newSelectedSkillsList) {
+                        // Jika selectedSkill tidak ada di newSelectedSkillsList maka tambahkan
+                        if (!selectedSkills.contains(skillName)) {
+                          selectedSkillsPoint[skillName] = 0;
+                        }
+                      }
+
+                      // Kita ubah selectedSkillPoint menjadi List (hanya keys saja)
+                      for (String skillName
+                          in selectedSkillsPoint.keys.toList()) {
+                        // Jika skillName dari Map selectedSkillPoint tidak ada di newSelectedSkillsList maka hapus
+                        if (!newSelectedSkillsList.contains(skillName)) {
+                          selectedSkillsPoint.remove(skillName);
+                        }
+                      }
+
+                      selectedSkills = newSelectedSkillsList;
                     });
                   },
-                ),
+                ),                
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class SkillPointSlider extends StatelessWidget {
+  const SkillPointSlider({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [
+        
+      ],
     );
   }
 }
