@@ -21,6 +21,21 @@ class _AddProgressPageState extends State<AddProgressPage> {
   AddProgressActivityCategory _currentCategory =
       AddProgressActivityCategory.activity;
 
+  final _activityCategoryController = TextEditingController();
+  final _summaryCategoryController = TextEditingController();
+  final _todoCategoryController = TextEditingController();
+
+  TextEditingController get _getCurrentCategoryController {
+    switch (_currentCategory) {
+      case AddProgressActivityCategory.activity:
+        return _activityCategoryController;
+      case AddProgressActivityCategory.summary:
+        return _summaryCategoryController;
+      case AddProgressActivityCategory.todo:
+        return _todoCategoryController;
+    }
+  }
+
   List<String> selectedSkills = [];
   Map<String, int> selectedSkillsPoint = {};
 
@@ -157,6 +172,7 @@ class _AddProgressPageState extends State<AddProgressPage> {
                   child: Column(
                     children: [
                       TextFormField(
+                        controller: _getCurrentCategoryController,
                         cursorColor: AppColors.primary,
                         minLines: 5,
                         maxLines: null,
