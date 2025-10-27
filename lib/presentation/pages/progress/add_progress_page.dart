@@ -9,6 +9,7 @@ import 'package:go_router/go_router.dart';
 import '../../../core/constants/colors.dart';
 import '../../widgets/container_category_button.dart';
 import 'add_activity_section.dart';
+import 'add_summary_section.dart';
 
 class AddProgressPage extends StatefulWidget {
   const AddProgressPage({super.key});
@@ -25,6 +26,13 @@ class _AddProgressPageState extends State<AddProgressPage> {
   final _summaryCategoryController = TextEditingController();
   final _todoCategoryController = TextEditingController();
 
+  final _activityLinkController = TextEditingController();
+  final _summaryLinkController = TextEditingController();
+  final _todoLinkController = TextEditingController();
+
+  DateTime? selectedDate;
+  TimeOfDay? selectedTime;
+
   TextEditingController get _getCurrentCategoryController {
     switch (_currentCategory) {
       case AddProgressActivityCategory.activity:
@@ -36,6 +44,17 @@ class _AddProgressPageState extends State<AddProgressPage> {
     }
   }
 
+  TextEditingController get _getCurrentLinkController {
+    switch (_currentCategory) {
+      case AddProgressActivityCategory.activity:
+        return _activityLinkController;
+      case AddProgressActivityCategory.summary:
+        return _summaryLinkController;
+      case AddProgressActivityCategory.todo:
+        return _todoLinkController;
+    }
+  }
+
   List<String> selectedSkills = [];
   Map<String, int> selectedSkillsPoint = {};
 
@@ -44,6 +63,14 @@ class _AddProgressPageState extends State<AddProgressPage> {
       DateTime.now().weekday == DateTime.sunday;
 
   bool _isNotificationEnabled = false;
+
+  @override
+  void dispose() {
+    _activityCategoryController.dispose();
+    _summaryCategoryController.dispose();
+    _todoCategoryController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,466 +230,51 @@ class _AddProgressPageState extends State<AddProgressPage> {
                               selectedSkills = newSelectedSkillsList;
                             });
                           },
+                          selectedDate: selectedDate,
+                          onDateChanged: (DateTime newDate) {
+                            setState(() {
+                              selectedDate = newDate;
+                            });
+                          },
+                          selectedTime: selectedTime,
+                          onTimeChanged: (TimeOfDay newTime) {
+                            setState(() {
+                              selectedTime = newTime;
+                            });
+                          },
                           onChangedSkillSlider: (String skillName, int value) {
                             setState(() {
                               selectedSkillsPoint[skillName] = value;
                             });
                           },
+                          link: _getCurrentLinkController,
+                          onLinkChanged: (String value) {
+                            setState(() {
+                              _getCurrentLinkController.text = value;
+                            });
+                          },
                         )
                       : _currentCategory == AddProgressActivityCategory.summary
-                      ? Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextFormField(
-                              controller: _getCurrentCategoryController,
-                              cursorColor: AppColors.primary,
-                              minLines: 5,
-                              maxLines: null,
-                              style: const TextStyle(fontSize: 16),
-                              decoration: const InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.gray0,
-                                    width: 2,
-                                  ),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.primary,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              height: 40,
-                              child: TextField(
-                                keyboardType: TextInputType.url,
-                                style: TextStyle(
-                                  color: AppColors.dark,
-                                  fontSize: 12,
-                                ),
-                                decoration: InputDecoration(
-                                  isDense: true, // Agar TextField lebih kecil
-                                  hint: Text(
-                                    'Link (optional)',
-                                    style: TextStyle(
-                                      color: AppColors.gray2,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8,
-                                      right: 8,
-                                    ),
-                                    child: SvgPicture.asset(
-                                      'assets/icons/link_box.svg',
-                                      colorFilter: ColorFilter.mode(
-                                        // TODO: Saat controller link tidak ada isi, maka jadikan warna gray2 tapi saat sudah disii jadi primary
-                                        AppColors.gray2,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                  ),
-                                  prefixIconConstraints: BoxConstraints(
-                                    minWidth: 26,
-                                    minHeight: 26,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: AppColors.gray2,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
-                                      color: AppColors.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 8,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            Text.rich(
-                              TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Announcement: ',
-                                    style: TextStyle(
-                                      color: AppColors.yellowAccent,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text:
-                                        'The weekly summary will be open on weekends, so stay tuned!',
-                                    style: TextStyle(
-                                      color: AppColors.gray3,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            isWeekend
-                                ? Column(
-                                    children: [
-                                      SizedBox(height: 16),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                            child: InkWell(
-                                              onTap: () {
-                                                // TODO: Tambahkan logic untuk memilih tangal hari ini
-                                              },
-                                              borderRadius:
-                                                  BorderRadius.circular(12),
-                                              child: Container(
-                                                width: double.infinity,
-                                                height: 40,
-                                                decoration: BoxDecoration(
-                                                  color: AppColors.primary,
-                                                  borderRadius:
-                                                      BorderRadius.circular(12),
-                                                ),
-                                                child: const Center(
-                                                  child: Text(
-                                                    'Save as weekly summary!',
-                                                    style: TextStyle(
-                                                      color: AppColors.white,
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  )
-                                : SizedBox.shrink(),
-                          ],
+                      ? AddSummarySection(
+                          getCurrentCategoryController:
+                              _getCurrentCategoryController,
+                          isWeekend: isWeekend,
+                          link: _getCurrentLinkController,
+                          onLinkChanged: (String value) {
+                            setState(() {
+                              _getCurrentLinkController.text = value;
+                            });
+                          },
                         )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            TextFormField(
-                              controller: _getCurrentCategoryController,
-                              cursorColor: AppColors.primary,
-                              minLines: 5,
-                              maxLines: null,
-                              style: const TextStyle(fontSize: 16),
-                              decoration: const InputDecoration(
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.gray0,
-                                    width: 2,
-                                  ),
-                                ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.primary,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              spacing: 10,
-                              children: [
-                                Expanded(
-                                  child: InkWell(
-                                    onTap: () {
-                                      // TODO: Tambahkan logic untuk memilih tanggal
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: _isNotificationEnabled
-                                              ? AppColors.primary
-                                              : AppColors.gray2,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(
-                                              spacing: 8,
-                                              children: [
-                                                Icon(
-                                                  Icons
-                                                      .notifications_none_rounded,
-                                                  size: 26,
-                                                  color: _isNotificationEnabled
-                                                      ? AppColors.primary
-                                                      : AppColors.gray2,
-                                                ),
-                                                Text(
-                                                  'Notification',
-                                                  style: TextStyle(
-                                                    color:
-                                                        _isNotificationEnabled
-                                                        ? AppColors.primary
-                                                        : AppColors.gray2,
-                                                    fontSize: 12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            CupertinoSwitch(
-                                              inactiveTrackColor:
-                                                  AppColors.gray0,
-                                              activeTrackColor:
-                                                  AppColors.primary,
-                                              inactiveThumbColor:
-                                                  AppColors.white,
-                                              value: _isNotificationEnabled,
-                                              onChanged: (value) {
-                                                setState(() {
-                                                  _isNotificationEnabled =
-                                                      value;
-                                                });
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              spacing: 10,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // TODO: Tambahkan logic untuk memilih tanggal
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: AppColors.primary,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                        ),
-                                        child: Row(
-                                          spacing: 8,
-                                          children: [
-                                            Icon(
-                                              Icons.event_available_outlined,
-                                              size: 26,
-                                              color: AppColors.primary,
-                                            ),
-                                            Text(
-                                              'Rabu, 24 September 2025',
-                                              style: TextStyle(
-                                                color: AppColors.dark,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // TODO: Tambahkan logic untuk memilih tangal hari ini
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Tomorrow',
-                                          style: TextStyle(
-                                            color: AppColors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            Row(
-                              spacing: 10,
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // TODO: Tambahkan logic untuk memilih waktu
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: AppColors.gray2,
-                                        ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 5,
-                                        ),
-                                        child: Row(
-                                          spacing: 8,
-                                          children: [
-                                            Icon(
-                                              Icons.schedule,
-                                              size: 26,
-                                              color: AppColors.gray2,
-                                            ),
-                                            Text(
-                                              'Time',
-                                              style: TextStyle(
-                                                color: AppColors.gray2,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: InkWell(
-                                    onTap: () {
-                                      // TODO: Tambahkan logic untuk memilih waktu saat ini
-                                    },
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primary,
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Now',
-                                          style: TextStyle(
-                                            color: AppColors.white,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 16),
-                            SizedBox(
-                              height: 40,
-                              child: TextField(
-                                keyboardType: TextInputType.url,
-                                style: TextStyle(
-                                  color: AppColors.dark,
-                                  fontSize: 12,
-                                ),
-                                decoration: InputDecoration(
-                                  isDense: true, // Agar TextField lebih kecil
-                                  hint: Text(
-                                    'Link (optional)',
-                                    style: TextStyle(
-                                      color: AppColors.gray2,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                  prefixIcon: Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 8,
-                                      right: 8,
-                                    ),
-                                    child: SvgPicture.asset(
-                                      'assets/icons/link_box.svg',
-                                      colorFilter: ColorFilter.mode(
-                                        // TODO: Saat controller link tidak ada isi, maka jadikan warna gray2 tapi saat sudah disii jadi primary
-                                        AppColors.gray2,
-                                        BlendMode.srcIn,
-                                      ),
-                                    ),
-                                  ),
-                                  prefixIconConstraints: BoxConstraints(
-                                    minWidth: 26,
-                                    minHeight: 26,
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: AppColors.gray2,
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
-                                      color: AppColors.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 8,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                          ],
+                      : AddTodoSection(
+                          getCurrentCategoryController:
+                              _getCurrentCategoryController,
+                          isNotificationEnabled: _isNotificationEnabled,
+                          onNotificationChanged: (bool value) {
+                            setState(() {
+                              _isNotificationEnabled = value;
+                            });
+                          },
                         ),
                 ),
               ),
@@ -670,6 +282,289 @@ class _AddProgressPageState extends State<AddProgressPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AddTodoSection extends StatelessWidget {
+  final TextEditingController _getCurrentCategoryController;
+  final bool _isNotificationEnabled;
+  final ValueChanged<bool> onNotificationChanged;
+
+  const AddTodoSection({
+    super.key,
+    required TextEditingController getCurrentCategoryController,
+    required bool isNotificationEnabled,
+    required this.onNotificationChanged,
+  }) : _getCurrentCategoryController = getCurrentCategoryController,
+       _isNotificationEnabled = isNotificationEnabled;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextFormField(
+          controller: _getCurrentCategoryController,
+          cursorColor: AppColors.primary,
+          minLines: 5,
+          maxLines: null,
+          style: const TextStyle(fontSize: 16),
+          decoration: const InputDecoration(
+            enabledBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.gray0, width: 2),
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: AppColors.primary, width: 2),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  onNotificationChanged(!_isNotificationEnabled);
+                  // TODO: Tambahkan logic untuk notifikasi
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _isNotificationEnabled
+                          ? AppColors.primary
+                          : AppColors.gray2,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          spacing: 8,
+                          children: [
+                            Icon(
+                              Icons.notifications_none_rounded,
+                              size: 26,
+                              color: _isNotificationEnabled
+                                  ? AppColors.primary
+                                  : AppColors.gray2,
+                            ),
+                            Text(
+                              'Notification',
+                              style: TextStyle(
+                                color: _isNotificationEnabled
+                                    ? AppColors.primary
+                                    : AppColors.gray2,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                        IgnorePointer(
+                          child: CupertinoSwitch(
+                            inactiveTrackColor: AppColors.gray0,
+                            activeTrackColor: AppColors.primary,
+                            inactiveThumbColor: AppColors.white,
+                            value: _isNotificationEnabled,
+                            onChanged: onNotificationChanged,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              flex: 5,
+              child: InkWell(
+                onTap: () {
+                  // TODO: Tambahkan logic untuk memilih tanggal
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.primary),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(
+                          Icons.event_available_outlined,
+                          size: 26,
+                          color: AppColors.primary,
+                        ),
+                        Text(
+                          'Rabu, 24 September 2025',
+                          style: TextStyle(color: AppColors.dark, fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: InkWell(
+                onTap: () {
+                  // TODO: Tambahkan logic untuk memilih tangal hari ini
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Tomorrow',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Row(
+          spacing: 10,
+          children: [
+            Expanded(
+              flex: 5,
+              child: InkWell(
+                onTap: () {
+                  // TODO: Tambahkan logic untuk memilih waktu
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.gray2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Row(
+                      spacing: 8,
+                      children: [
+                        Icon(Icons.schedule, size: 26, color: AppColors.gray2),
+                        Text(
+                          'Time',
+                          style: TextStyle(
+                            color: AppColors.gray2,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: InkWell(
+                onTap: () {
+                  // TODO: Tambahkan logic untuk memilih waktu saat ini
+                },
+                borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'Now',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 40,
+          child: TextField(
+            keyboardType: TextInputType.url,
+            style: TextStyle(color: AppColors.dark, fontSize: 12),
+            decoration: InputDecoration(
+              isDense: true, // Agar TextField lebih kecil
+              hint: Text(
+                'Link (optional)',
+                style: TextStyle(color: AppColors.gray2, fontSize: 12),
+              ),
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: SvgPicture.asset(
+                  'assets/icons/link_box.svg',
+                  colorFilter: ColorFilter.mode(
+                    // TODO: Saat controller link tidak ada isi, maka jadikan warna gray2 tapi saat sudah disii jadi primary
+                    AppColors.gray2,
+                    BlendMode.srcIn,
+                  ),
+                ),
+              ),
+              prefixIconConstraints: BoxConstraints(
+                minWidth: 26,
+                minHeight: 26,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: AppColors.gray2),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(
+                  // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
+                  color: AppColors.primary,
+                  width: 2,
+                ),
+              ),
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 8,
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 16),
+      ],
     );
   }
 }
