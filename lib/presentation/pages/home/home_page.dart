@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
                                 time: '08:30',
                                 date: '2025/09/28',
                                 link:
-                                    'https://www.youtube.com/watch?v=jq7zj8jJFso',
+                                    'https://www.youtube.com/watch?v=8iuIcnRnYAo',
                                 description:
                                     'Jogging selama 30 menit bersama teman-teman',
                                 skillType: SkillType.activity,

@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/constants/colors.dart';
+import 'widgets/date_picker_custom.dart';
 import 'widgets/skill_chip_selection.dart';
 import 'widgets/skill_point_slider.dart';
+
+import 'widgets/time_picker_custom.dart';
 
 class AddActivitySection extends StatelessWidget {
   final TextEditingController _getCurrentCategoryController;
   final List<String> selectedSkills;
   final Map<String, int> selectedSkillsPoint;
   final ValueChanged<List<String>> onChipSelected;
+  final DateTime? selectedDate;
+  final ValueChanged<DateTime> onDateChanged;
+  final TimeOfDay? selectedTime;
+  final ValueChanged<TimeOfDay> onTimeChanged;
+  final TextEditingController? link;
+  final ValueChanged<String> onLinkChanged;
   final void Function(String skillName, int value) onChangedSkillSlider;
 
   const AddActivitySection({
@@ -19,6 +29,12 @@ class AddActivitySection extends StatelessWidget {
     required this.selectedSkillsPoint,
     required this.onChipSelected,
     required this.onChangedSkillSlider,
+    this.selectedDate,
+    required this.onDateChanged,
+    this.selectedTime,
+    required this.onTimeChanged,
+    this.link,
+    required this.onLinkChanged,
   }) : _getCurrentCategoryController = getCurrentCategoryController;
 
   @override
@@ -47,15 +63,21 @@ class AddActivitySection extends StatelessWidget {
             Expanded(
               flex: 5,
               child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih tanggal
+                onTap: () async {
+                  final pickedDate = await showDatePickerCustom(context);
+
+                  if (pickedDate != null) onDateChanged(pickedDate);
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   width: double.infinity,
                   height: 40,
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary),
+                    border: Border.all(
+                      color: selectedDate != null
+                          ? AppColors.primary
+                          : AppColors.gray2,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
@@ -66,11 +88,20 @@ class AddActivitySection extends StatelessWidget {
                         Icon(
                           Icons.event_available_outlined,
                           size: 26,
-                          color: AppColors.primary,
+                          color: selectedDate != null
+                              ? AppColors.primary
+                              : AppColors.gray2,
                         ),
                         Text(
-                          'Rabu, 24 September 2025',
-                          style: TextStyle(color: AppColors.dark, fontSize: 12),
+                          selectedDate != null
+                              ? '${DateFormat('EEEE').format(selectedDate!)}, ${DateFormat('d MMM yyyy').format(selectedDate!)}'
+                              : 'Select Date',
+                          style: TextStyle(
+                            color: selectedDate != null
+                                ? AppColors.dark
+                                : AppColors.gray2,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -82,7 +113,7 @@ class AddActivitySection extends StatelessWidget {
               flex: 2,
               child: InkWell(
                 onTap: () {
-                  // TODO: Tambahkan logic untuk memilih tangal hari ini
+                  onDateChanged(DateTime.now());
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
@@ -114,15 +145,23 @@ class AddActivitySection extends StatelessWidget {
             Expanded(
               flex: 5,
               child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih waktu
+                onTap: () async {
+                  final TimeOfDay? timePicked = await showTimePickerCustom(
+                    context,
+                  );
+
+                  if (timePicked != null) onTimeChanged(timePicked);
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
                   width: double.infinity,
                   height: 40,
                   decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.gray2),
+                    border: Border.all(
+                      color: selectedTime != null
+                          ? AppColors.primary
+                          : AppColors.gray2,
+                    ),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Padding(
@@ -130,11 +169,21 @@ class AddActivitySection extends StatelessWidget {
                     child: Row(
                       spacing: 8,
                       children: [
-                        Icon(Icons.schedule, size: 26, color: AppColors.gray2),
+                        Icon(
+                          Icons.schedule,
+                          size: 26,
+                          color: selectedTime != null
+                              ? AppColors.primary
+                              : AppColors.gray2,
+                        ),
                         Text(
-                          'Time',
+                          selectedTime != null
+                              ? '${selectedTime!.hour.toString().padLeft(2, '0')}:${selectedTime!.minute.toString().padLeft(2, '0')}'
+                              : 'Select Time',
                           style: TextStyle(
-                            color: AppColors.gray2,
+                            color: selectedTime != null
+                                ? AppColors.dark
+                                : AppColors.gray2,
                             fontSize: 12,
                           ),
                         ),
@@ -148,7 +197,7 @@ class AddActivitySection extends StatelessWidget {
               flex: 2,
               child: InkWell(
                 onTap: () {
-                  // TODO: Tambahkan logic untuk memilih waktu saat ini
+                  onTimeChanged(TimeOfDay.now());
                 },
                 borderRadius: BorderRadius.circular(12),
                 child: Container(
@@ -177,6 +226,8 @@ class AddActivitySection extends StatelessWidget {
         SizedBox(
           height: 40,
           child: TextField(
+            controller: link,
+            onChanged: (value) => onLinkChanged(value),
             keyboardType: TextInputType.url,
             style: TextStyle(color: AppColors.dark, fontSize: 12),
             decoration: InputDecoration(
@@ -190,8 +241,9 @@ class AddActivitySection extends StatelessWidget {
                 child: SvgPicture.asset(
                   'assets/icons/link_box.svg',
                   colorFilter: ColorFilter.mode(
-                    // TODO: Saat controller link tidak ada isi, maka jadikan warna gray2 tapi saat sudah disii jadi primary
-                    AppColors.gray2,
+                    link?.text.isNotEmpty == true
+                        ? AppColors.primary
+                        : AppColors.gray2,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -200,15 +252,19 @@ class AddActivitySection extends StatelessWidget {
                 minWidth: 26,
                 minHeight: 26,
               ),
-              enabledBorder: OutlineInputBorder(
+              border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.gray2),
+                borderSide: BorderSide(
+                  color: link != null ? AppColors.primary : AppColors.gray2,
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide(
                   // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
-                  color: AppColors.primary,
+                  color: link?.text.isNotEmpty == true
+                      ? AppColors.primary
+                      : AppColors.gray2,
                   width: 2,
                 ),
               ),
