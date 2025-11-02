@@ -18,15 +18,26 @@ class ProgressPage extends StatefulWidget {
 
 class _ProgressPageState extends State<ProgressPage> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  double _scrollPosition = 0.0;
   bool _isDateFilterExpanded = false;
-
   ActivityCategory _currentActivityCategory = ActivityCategory.all;
-
   DateTime? _selectedDateFilter;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        _scrollPosition = _scrollController.position.pixels;
+      });
+    });
+  }
 
   @override
   void dispose() {
     _searchController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -167,51 +178,77 @@ class _ProgressPageState extends State<ProgressPage> {
                 },
               ),
               Expanded(
-                child: ListView.builder(
-                  // TODO: Ganti dengan jumlah data asli setelah ada
-                  itemCount: 10,
-                  itemBuilder: (context, index) {
-                    // TODO: Ganti dengan isi data asli setelah ada
-                    if (index == 0) {
-                      return TimelineRecentActivities(
-                        time: '08:30',
-                        date: '2025/09/28',
-                        link: 'https://www.youtube.com/watch?v=8iuIcnRnYAo',
-                        description:
-                            'Jogging selama 30 menit bersama teman-teman',
-                        skillType: SkillType.activity,
-                        skill: ['VIT', 'Social'],
-                        point: '2',
-                      );
-                    } else if (index == 1) {
-                      return TimelineRecentActivities(
-                        time: '08:30',
-                        date: '2025/09/28',
-                        description:
-                            'Jogging selama 30 menit bersama teman-teman',
-                        skillType: SkillType.summary,
-                        point: '1',
-                      );
-                    } else if (index == 2) {
-                      return TimelineRecentActivities(
-                        time: '08:30',
-                        date: '2025/09/28',
-                        description:
-                            'Jogging selama 30 menit bersama teman-teman',
-                        skillType: SkillType.todo,
-                        point: '1',
-                      );
-                    }
-                    return TimelineRecentActivities(
-                      time: '08:30',
-                      date: '2025/09/28',
-                      description:
-                          'Jogging selama 30 menit bersama teman-teman',
-                      skillType: SkillType.activity,
-                      skill: ['Social', 'VIT'],
-                      point: '1',
-                    );
-                  },
+                child: Stack(
+                  children: [
+                    ListView.builder(
+                      // TODO: Ganti dengan jumlah data asli setelah ada
+                      controller: _scrollController,
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        // TODO: Ganti dengan isi data asli setelah ada
+                        if (index == 0) {
+                          return TimelineRecentActivities(
+                            time: '08:30',
+                            date: '2025/09/28',
+                            link: 'https://www.youtube.com/watch?v=8iuIcnRnYAo',
+                            description:
+                                'Jogging selama 30 menit bersama teman-teman',
+                            skillType: SkillType.activity,
+                            skill: ['VIT', 'Social'],
+                            point: '2',
+                          );
+                        } else if (index == 1) {
+                          return TimelineRecentActivities(
+                            time: '08:30',
+                            date: '2025/09/28',
+                            description:
+                                'Jogging selama 30 menit bersama teman-teman',
+                            skillType: SkillType.summary,
+                            point: '1',
+                          );
+                        } else if (index == 2) {
+                          return TimelineRecentActivities(
+                            time: '08:30',
+                            date: '2025/09/28',
+                            description:
+                                'Jogging selama 30 menit bersama teman-teman',
+                            skillType: SkillType.todo,
+                            point: '1',
+                          );
+                        }
+                        return TimelineRecentActivities(
+                          time: '08:30',
+                          date: '2025/09/28',
+                          description:
+                              'Jogging selama 30 menit bersama teman-teman',
+                          skillType: SkillType.activity,
+                          skill: ['Social', 'VIT'],
+                          point: '1',
+                        );
+                      },
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: MediaQuery.of(context).padding.bottom,
+                      child: Visibility(
+                        visible: _scrollPosition > 0,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            _scrollController.animateTo(
+                              0,
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          },
+                          backgroundColor: AppColors.primary,
+                          child: const Icon(
+                            Icons.arrow_upward,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
