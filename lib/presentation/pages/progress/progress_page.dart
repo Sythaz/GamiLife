@@ -8,6 +8,7 @@ import '../../widgets/custom_category_button.dart';
 import '../../widgets/container_category_button.dart';
 import '../../widgets/search_field.dart';
 import 'widgets/date_filter_section.dart';
+import 'widgets/draggable_scroll_up_button.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -20,6 +21,7 @@ class _ProgressPageState extends State<ProgressPage> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   double _scrollPosition = 0.0;
+
   bool _isDateFilterExpanded = false;
   ActivityCategory _currentActivityCategory = ActivityCategory.all;
   DateTime? _selectedDateFilter;
@@ -27,10 +29,12 @@ class _ProgressPageState extends State<ProgressPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      setState(() {
-        _scrollPosition = _scrollController.position.pixels;
-      });
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    setState(() {
+      _scrollPosition = _scrollController.position.pixels;
     });
   }
 
@@ -43,27 +47,25 @@ class _ProgressPageState extends State<ProgressPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: Scaffold(
+    return Scaffold(
+      backgroundColor: AppColors.white,
+      appBar: AppBar(
         backgroundColor: AppColors.white,
-        appBar: AppBar(
-          backgroundColor: AppColors.white,
-          elevation: 2,
-          shadowColor: Colors.black.withAlpha((0.2 * 255).toInt()),
-          surfaceTintColor: Colors.transparent,
-          centerTitle: true,
-          title: const Text(
-            'Progress Page',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
+        elevation: 2,
+        shadowColor: Colors.black.withAlpha((0.2 * 255).toInt()),
+        surfaceTintColor: Colors.transparent,
+        centerTitle: true,
+        title: const Text(
+          'Progress Page',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: AppColors.primary,
           ),
         ),
-        body: Padding(
+      ),
+      body: SafeArea(
+        child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -178,77 +180,72 @@ class _ProgressPageState extends State<ProgressPage> {
                 },
               ),
               Expanded(
-                child: Stack(
-                  children: [
-                    ListView.builder(
-                      // TODO: Ganti dengan jumlah data asli setelah ada
-                      controller: _scrollController,
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        // TODO: Ganti dengan isi data asli setelah ada
-                        if (index == 0) {
-                          return TimelineRecentActivities(
-                            time: '08:30',
-                            date: '2025/09/28',
-                            link: 'https://www.youtube.com/watch?v=8iuIcnRnYAo',
-                            description:
-                                'Jogging selama 30 menit bersama teman-teman',
-                            skillType: SkillType.activity,
-                            skill: ['VIT', 'Social'],
-                            point: '2',
-                          );
-                        } else if (index == 1) {
-                          return TimelineRecentActivities(
-                            time: '08:30',
-                            date: '2025/09/28',
-                            description:
-                                'Jogging selama 30 menit bersama teman-teman',
-                            skillType: SkillType.summary,
-                            point: '1',
-                          );
-                        } else if (index == 2) {
-                          return TimelineRecentActivities(
-                            time: '08:30',
-                            date: '2025/09/28',
-                            description:
-                                'Jogging selama 30 menit bersama teman-teman',
-                            skillType: SkillType.todo,
-                            point: '1',
-                          );
-                        }
-                        return TimelineRecentActivities(
-                          time: '08:30',
-                          date: '2025/09/28',
-                          description:
-                              'Jogging selama 30 menit bersama teman-teman',
-                          skillType: SkillType.activity,
-                          skill: ['Social', 'VIT'],
-                          point: '1',
-                        );
-                      },
-                    ),
-                    Positioned(
-                      right: 0,
-                      bottom: MediaQuery.of(context).padding.bottom,
-                      child: Visibility(
-                        visible: _scrollPosition > 0,
-                        child: FloatingActionButton(
-                          onPressed: () {
-                            _scrollController.animateTo(
-                              0,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final double maxX = constraints.maxWidth;
+                    final double maxY = constraints.maxHeight;
+
+                    return Stack(
+                      children: [
+                        ListView.builder(
+                          // TODO: Ganti dengan jumlah data asli setelah ada
+                          controller: _scrollController,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            print('ListView Moved');
+                            // TODO: Ganti dengan isi data asli setelah ada
+                            if (index == 0) {
+                              return TimelineRecentActivities(
+                                time: '08:30',
+                                date: '2025/09/28',
+                                link:
+                                    'https://www.youtube.com/watch?v=8iuIcnRnYAo',
+                                description:
+                                    'Jogging selama 30 menit bersama teman-teman',
+                                skillType: SkillType.activity,
+                                skill: ['VIT', 'Social'],
+                                point: '2',
+                              );
+                            } else if (index == 1) {
+                              return TimelineRecentActivities(
+                                time: '08:30',
+                                date: '2025/09/28',
+                                description:
+                                    'Jogging selama 30 menit bersama teman-teman',
+                                skillType: SkillType.summary,
+                                point: '1',
+                              );
+                            } else if (index == 2) {
+                              return TimelineRecentActivities(
+                                time: '08:30',
+                                date: '2025/09/28',
+                                description:
+                                    'Jogging selama 30 menit bersama teman-teman',
+                                skillType: SkillType.todo,
+                                point: '1',
+                              );
+                            }
+                            return TimelineRecentActivities(
+                              time: '08:30',
+                              date: '2025/09/28',
+                              description:
+                                  'Jogging selama 30 menit bersama teman-teman Jogging selama 30 menit bersama teman-teman dbasja dsadbjasbjsd hjadsbjasbduhas sgdagsja sadgjas',
+                              skillType: SkillType.activity,
+                              skill: ['Social', 'VIT'],
+                              point: '1',
                             );
                           },
-                          backgroundColor: AppColors.primary,
-                          child: const Icon(
-                            Icons.arrow_upward,
-                            color: Colors.white,
-                          ),
                         ),
-                      ),
-                    ),
-                  ],
+
+                        DraggableScrollUpButton(
+                          scrollController: _scrollController,
+                          maxX: maxX,
+                          maxY: maxY,
+                          isVisible: _scrollPosition > 0,
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
             ],
