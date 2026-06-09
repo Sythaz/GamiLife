@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/enums/enums_button_category.dart';
+import 'package:gamilife/presentation/pages/progress/add_todo_section.dart';
+import 'package:gamilife/presentation/pages/progress/controllers/add_progress_controller.dart';
 import 'package:gamilife/presentation/widgets/custom_category_button.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,17 +14,15 @@ import '../../widgets/container_category_button.dart';
 import 'add_activity_section.dart';
 import 'add_summary_section.dart';
 
-class AddProgressPage extends StatefulWidget {
+class AddProgressPage extends ConsumerStatefulWidget {
   const AddProgressPage({super.key});
 
   @override
-  State<AddProgressPage> createState() => _AddProgressPageState();
+  ConsumerState<AddProgressPage> createState() => _AddProgressPageState();
 }
 
-class _AddProgressPageState extends State<AddProgressPage> {
-  AddProgressActivityCategory _currentCategory =
-      AddProgressActivityCategory.activity;
-
+class _AddProgressPageState extends ConsumerState<AddProgressPage> {
+  // Text controllers untuk UI input
   final _activityCategoryController = TextEditingController();
   final _summaryCategoryController = TextEditingController();
   final _todoCategoryController = TextEditingController();
@@ -30,11 +31,62 @@ class _AddProgressPageState extends State<AddProgressPage> {
   final _summaryLinkController = TextEditingController();
   final _todoLinkController = TextEditingController();
 
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
+  @override
+  void initState() {
+    super.initState();
+
+    // Setup listeners untuk sync text controllers dengan state
+    _activityCategoryController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setActivityDescription(_activityCategoryController.text);
+    });
+
+    _summaryCategoryController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setSummaryDescription(_summaryCategoryController.text);
+    });
+
+    _todoCategoryController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setTodoDescription(_todoCategoryController.text);
+    });
+
+    _activityLinkController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setActivityLink(_activityLinkController.text);
+    });
+
+    _summaryLinkController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setSummaryLink(_summaryLinkController.text);
+    });
+
+    _todoLinkController.addListener(() {
+      ref
+          .read(addProgressControllerProvider.notifier)
+          .setTodoLink(_todoLinkController.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    _activityCategoryController.dispose();
+    _summaryCategoryController.dispose();
+    _todoCategoryController.dispose();
+    _activityLinkController.dispose();
+    _summaryLinkController.dispose();
+    _todoLinkController.dispose();
+    super.dispose();
+  }
 
   TextEditingController get _getCurrentCategoryController {
-    switch (_currentCategory) {
+    final category = ref.read(addProgressControllerProvider).currentCategory;
+    switch (category) {
       case AddProgressActivityCategory.activity:
         return _activityCategoryController;
       case AddProgressActivityCategory.summary:
@@ -45,7 +97,8 @@ class _AddProgressPageState extends State<AddProgressPage> {
   }
 
   TextEditingController get _getCurrentLinkController {
-    switch (_currentCategory) {
+    final category = ref.read(addProgressControllerProvider).currentCategory;
+    switch (category) {
       case AddProgressActivityCategory.activity:
         return _activityLinkController;
       case AddProgressActivityCategory.summary:
@@ -55,25 +108,38 @@ class _AddProgressPageState extends State<AddProgressPage> {
     }
   }
 
-  List<String> selectedSkills = [];
-  Map<String, int> selectedSkillsPoint = {};
+  Future<void> _handleSave() async {
+    final controller = ref.read(addProgressControllerProvider.notifier);
+    final errorMessage = await controller.saveProgress();
 
-  final isWeekend =
-      DateTime.now().weekday == DateTime.saturday ||
-      DateTime.now().weekday == DateTime.sunday;
+    if (!mounted) return;
 
-  bool _isNotificationEnabled = false;
-
-  @override
-  void dispose() {
-    _activityCategoryController.dispose();
-    _summaryCategoryController.dispose();
-    _todoCategoryController.dispose();
-    super.dispose();
+    if (errorMessage != null) {
+      // Show error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.orange),
+      );
+    } else {
+      // Success
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Progress saved successfully!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      context.pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(addProgressControllerProvider);
+    final controller = ref.read(addProgressControllerProvider.notifier);
+
+    final isWeekend =
+        DateTime.now().weekday == DateTime.saturday ||
+        DateTime.now().weekday == DateTime.sunday;
+
     return SafeArea(
       top: false,
       bottom: false,
@@ -91,9 +157,7 @@ class _AddProgressPageState extends State<AddProgressPage> {
               fontWeight: FontWeight.bold,
               color: AppColors.primary,
             ),
-            onPressed: () {
-              context.pop();
-            },
+            onPressed: () => context.pop(),
           ),
           title: const Text(
             'Add Progress',
@@ -108,20 +172,28 @@ class _AddProgressPageState extends State<AddProgressPage> {
               margin: const EdgeInsets.only(right: 8),
               child: InkWell(
                 borderRadius: BorderRadius.circular(50),
-                onTap: () {
-                  // TODO: Tambahkan logic untuk menyimpan progress
-                  context.pop();
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primary,
-                    ),
-                  ),
+                onTap: state.isSaving ? null : _handleSave,
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: state.isSaving
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primary,
+                            ),
+                          ),
+                        )
+                      : const Text(
+                          'Save',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primary,
+                          ),
+                        ),
                 ),
               ),
             ),
@@ -133,69 +205,58 @@ class _AddProgressPageState extends State<AddProgressPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ContainerCategoryButton(
-                currentCategory: _currentCategory,
+                currentCategory: state.currentCategory,
                 children: [
                   CustomCategoryButton(
                     label: 'Activity',
-                    currentCategory: _currentCategory,
+                    currentCategory: state.currentCategory,
                     buttonCategory: AddProgressActivityCategory.activity,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.activity,
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.activity,
                     ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
+                    onSelected: (category) => controller.setCategory(category),
                   ),
                   CustomCategoryButton(
                     label: 'Summary',
-                    currentCategory: _currentCategory,
+                    currentCategory: state.currentCategory,
                     buttonCategory: AddProgressActivityCategory.summary,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.summary,
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.summary,
                     ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
+                    onSelected: (category) => controller.setCategory(category),
                   ),
                   CustomCategoryButton(
                     label: 'To-do',
-                    currentCategory: _currentCategory,
+                    currentCategory: state.currentCategory,
                     buttonCategory: AddProgressActivityCategory.todo,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.todo,
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
-                      currentCategory: _currentCategory,
+                      currentCategory: state.currentCategory,
                       buttonCategory: AddProgressActivityCategory.todo,
                     ),
-                    onSelected: (activityValue) {
-                      setState(() {
-                        _currentCategory = activityValue;
-                      });
-                    },
+                    onSelected: (category) => controller.setCategory(category),
                   ),
                 ],
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               Text(
-                _currentCategory == AddProgressActivityCategory.activity
+                state.currentCategory == AddProgressActivityCategory.activity
                     ? '- What have you done?'
-                    : _currentCategory == AddProgressActivityCategory.summary
+                    : state.currentCategory ==
+                          AddProgressActivityCategory.summary
                     ? '- Let\'s share your reflections!'
                     : '- What are you planning to do?',
                 style: const TextStyle(fontSize: 12, color: AppColors.gray3),
@@ -203,78 +264,81 @@ class _AddProgressPageState extends State<AddProgressPage> {
               Expanded(
                 child: SingleChildScrollView(
                   child:
-                      _currentCategory == AddProgressActivityCategory.activity
+                      state.currentCategory ==
+                          AddProgressActivityCategory.activity
                       ? AddActivitySection(
                           getCurrentCategoryController:
                               _getCurrentCategoryController,
-                          selectedSkills: selectedSkills,
-                          selectedSkillsPoint: selectedSkillsPoint,
-                          onChipSelected: (List<String> newSelectedSkillsList) {
-                            setState(() {
-                              // Hapus yang tidak dipilih menggunakan removeWhere dari map
-                              selectedSkillsPoint.removeWhere(
-                                // Jika skill tidak ada di newSelectedSkillsList maka true dan hapus
-                                (skill, _) =>
-                                    !newSelectedSkillsList.contains(skill),
-                              );
+                          selectedSkills: state.activitySkills,
+                          selectedSkillsPoint: state.activitySkillsPoint,
+                          onChipSelected: (skills) {
+                            // Update skills point map
+                            final newSkillsPoint = Map<String, int>.from(
+                              state.activitySkillsPoint,
+                            );
 
-                              // Tambahkan yang baru dipilih (dengan nilai default 1)
-                              for (final skill in newSelectedSkillsList) {
-                                // Jika skill belum ada di map (putIfAbsent)
-                                // maka tambahkan nama skill itu dengan nilai default 1
-                                selectedSkillsPoint.putIfAbsent(skill, () => 1);
-                              }
+                            // Remove unselected skills
+                            newSkillsPoint.removeWhere(
+                              (skill, _) => !skills.contains(skill),
+                            );
 
-                              // Update selectedSkills dengan newSelectedSkillsList
-                              // yang telah dikirim dari SkillChipSelection onSelected
-                              selectedSkills = newSelectedSkillsList;
-                            });
+                            // Add new skills with default value 1
+                            for (final skill in skills) {
+                              newSkillsPoint.putIfAbsent(skill, () => 1);
+                            }
+
+                            controller.setActivitySkills(
+                              skills,
+                              newSkillsPoint,
+                            );
                           },
-                          selectedDate: selectedDate,
-                          onDateChanged: (DateTime newDate) {
-                            setState(() {
-                              selectedDate = newDate;
-                            });
-                          },
-                          selectedTime: selectedTime,
-                          onTimeChanged: (TimeOfDay newTime) {
-                            setState(() {
-                              selectedTime = newTime;
-                            });
-                          },
-                          onChangedSkillSlider: (String skillName, int value) {
-                            setState(() {
-                              selectedSkillsPoint[skillName] = value;
-                            });
+                          selectedDate: state.activityDate,
+                          onDateChanged: (date) =>
+                              controller.setActivityDate(date),
+                          selectedTime: state.activityTime,
+                          onTimeChanged: (time) =>
+                              controller.setActivityTime(time),
+                          onChangedSkillSlider: (skillName, value) {
+                            final updatedSkillsPoint = Map<String, int>.from(
+                              state.activitySkillsPoint,
+                            );
+                            updatedSkillsPoint[skillName] = value;
+                            controller.setActivitySkills(
+                              state.activitySkills,
+                              updatedSkillsPoint,
+                            );
                           },
                           link: _getCurrentLinkController,
-                          onLinkChanged: (String value) {
-                            setState(() {
-                              _getCurrentLinkController.text = value;
-                            });
-                          },
+                          onLinkChanged: (_) {}, // Handled by listener
                         )
-                      : _currentCategory == AddProgressActivityCategory.summary
+                      : state.currentCategory ==
+                            AddProgressActivityCategory.summary
                       ? AddSummarySection(
                           getCurrentCategoryController:
                               _getCurrentCategoryController,
                           isWeekend: isWeekend,
                           link: _getCurrentLinkController,
-                          onLinkChanged: (String value) {
-                            setState(() {
-                              _getCurrentLinkController.text = value;
-                            });
+                          onTapWeekly: (value) {
+                            controller.setSummaryWeekly(value);
+                            if (value) {
+                              // Auto save ketika toggle weekly
+                              _handleSave();
+                            }
                           },
+                          onLinkChanged: (_) {}, // Handled by listener
                         )
                       : AddTodoSection(
                           getCurrentCategoryController:
                               _getCurrentCategoryController,
-                          isNotificationEnabled: _isNotificationEnabled,
-                          onNotificationChanged: (bool value) {
-                            setState(() {
-                              _isNotificationEnabled = value;
-                            });
-                          },
+                          selectedDate: state.todoDate,
+                          onDateChanged: (date) => controller.setTodoDate(date),
+                          selectedTime: state.todoTime,
+                          onTimeChanged: (time) => controller.setTodoTime(time),
+                          isNotificationEnabled: state.isNotificationEnabled,
+                          onNotificationChanged: (value) =>
+                              controller.setNotificationEnabled(value),
+                          link: _getCurrentLinkController,
+                          onLinkChanged: (_) {}, // Handled by listener
                         ),
                 ),
               ),
@@ -282,289 +346,6 @@ class _AddProgressPageState extends State<AddProgressPage> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class AddTodoSection extends StatelessWidget {
-  final TextEditingController _getCurrentCategoryController;
-  final bool _isNotificationEnabled;
-  final ValueChanged<bool> onNotificationChanged;
-
-  const AddTodoSection({
-    super.key,
-    required TextEditingController getCurrentCategoryController,
-    required bool isNotificationEnabled,
-    required this.onNotificationChanged,
-  }) : _getCurrentCategoryController = getCurrentCategoryController,
-       _isNotificationEnabled = isNotificationEnabled;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextFormField(
-          controller: _getCurrentCategoryController,
-          cursorColor: AppColors.primary,
-          minLines: 5,
-          maxLines: null,
-          style: const TextStyle(fontSize: 16),
-          decoration: const InputDecoration(
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.gray0, width: 2),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: AppColors.primary, width: 2),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          spacing: 10,
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  onNotificationChanged(!_isNotificationEnabled);
-                  // TODO: Tambahkan logic untuk notifikasi
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: _isNotificationEnabled
-                          ? AppColors.primary
-                          : AppColors.gray2,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          spacing: 8,
-                          children: [
-                            Icon(
-                              Icons.notifications_none_rounded,
-                              size: 26,
-                              color: _isNotificationEnabled
-                                  ? AppColors.primary
-                                  : AppColors.gray2,
-                            ),
-                            Text(
-                              'Notification',
-                              style: TextStyle(
-                                color: _isNotificationEnabled
-                                    ? AppColors.primary
-                                    : AppColors.gray2,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                        IgnorePointer(
-                          child: CupertinoSwitch(
-                            inactiveTrackColor: AppColors.gray0,
-                            activeTrackColor: AppColors.primary,
-                            inactiveThumbColor: AppColors.white,
-                            value: _isNotificationEnabled,
-                            onChanged: onNotificationChanged,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          spacing: 10,
-          children: [
-            Expanded(
-              flex: 5,
-              child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih tanggal
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.primary),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Row(
-                      spacing: 8,
-                      children: [
-                        Icon(
-                          Icons.event_available_outlined,
-                          size: 26,
-                          color: AppColors.primary,
-                        ),
-                        Text(
-                          'Rabu, 24 September 2025',
-                          style: TextStyle(color: AppColors.dark, fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih tangal hari ini
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Tomorrow',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Row(
-          spacing: 10,
-          children: [
-            Expanded(
-              flex: 5,
-              child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih waktu
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.gray2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Row(
-                      spacing: 8,
-                      children: [
-                        Icon(Icons.schedule, size: 26, color: AppColors.gray2),
-                        Text(
-                          'Time',
-                          style: TextStyle(
-                            color: AppColors.gray2,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: 2,
-              child: InkWell(
-                onTap: () {
-                  // TODO: Tambahkan logic untuk memilih waktu saat ini
-                },
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  width: double.infinity,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Now',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 40,
-          child: TextField(
-            keyboardType: TextInputType.url,
-            style: TextStyle(color: AppColors.dark, fontSize: 12),
-            decoration: InputDecoration(
-              isDense: true, // Agar TextField lebih kecil
-              hint: Text(
-                'Link (optional)',
-                style: TextStyle(color: AppColors.gray2, fontSize: 12),
-              ),
-              prefixIcon: Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: SvgPicture.asset(
-                  'assets/icons/link_box.svg',
-                  colorFilter: ColorFilter.mode(
-                    // TODO: Saat controller link tidak ada isi, maka jadikan warna gray2 tapi saat sudah disii jadi primary
-                    AppColors.gray2,
-                    BlendMode.srcIn,
-                  ),
-                ),
-              ),
-              prefixIconConstraints: BoxConstraints(
-                minWidth: 26,
-                minHeight: 26,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: AppColors.gray2),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(
-                  // TODO: Saat focus warna gray2 tapi saat sudah disii jadi primary
-                  color: AppColors.primary,
-                  width: 2,
-                ),
-              ),
-              contentPadding: const EdgeInsets.symmetric(
-                vertical: 10,
-                horizontal: 8,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: 16),
-      ],
     );
   }
 }

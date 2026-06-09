@@ -6,9 +6,11 @@ class SearchField extends StatelessWidget {
   const SearchField({
     super.key,
     required TextEditingController searchController,
+    this.onChanged,
   }) : _searchController = searchController;
 
   final TextEditingController _searchController;
+  final Function(String)? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,7 @@ class SearchField extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: _searchController,
+              onChanged: onChanged,
               style: const TextStyle(color: AppColors.gray3, fontSize: 16),
               decoration: const InputDecoration(
                 border: InputBorder.none,

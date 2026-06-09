@@ -23,64 +23,69 @@ class BannerQuest extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(child: CustomPaint(painter: StarfieldPainter())),
-          Positioned(
-            left: 16,
-            top: 16,
-            child: Text(
-              'The Quest Starts Today',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Positioned(
-            left: 16,
-            top: 46,
-            child: Text(
-              'Level up your life, one mission at a time',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 12,
-                // fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Positioned(
-            left: 16,
-            bottom: 16,
-            child: ElevatedButton(
-              onPressed: () {
-                showModalBottomSheet(
-                  isDismissible: false,
-                  clipBehavior: Clip.hardEdge,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(32),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'The Quest Starts Today',
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Level up your life, one mission at a time',
+                        style: TextStyle(color: AppColors.white, fontSize: 12),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      isDismissible: false,
+                      clipBehavior: Clip.hardEdge,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(32),
+                        ),
+                      ),
+                      context: context,
+                      builder: (context) {
+                        return const CheckInModalContent(countCheckIn: 8);
+                      },
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(115, 40),
+                    backgroundColor: AppColors.yellowAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(46),
                     ),
                   ),
-                  context: context,
-                  builder: (context) {
-                    return CheckInModalContent(countCheckIn: 8);
-                  },
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                fixedSize: const Size(115, 40),
-                backgroundColor: AppColors.yellowAccent,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(46),
+                  child: const Text(
+                    'Check In',
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                'Check In',
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+              ],
             ),
           ),
         ],

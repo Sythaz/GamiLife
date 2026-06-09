@@ -6,6 +6,7 @@ import '../../../core/constants/colors.dart';
 class AddSummarySection extends StatelessWidget {
   final TextEditingController _getCurrentCategoryController;
   final bool isWeekend;
+  final ValueChanged<bool> onTapWeekly;
   final TextEditingController? link;
   final ValueChanged<String> onLinkChanged;
 
@@ -13,6 +14,7 @@ class AddSummarySection extends StatelessWidget {
     super.key,
     required TextEditingController getCurrentCategoryController,
     required this.isWeekend,
+    required this.onTapWeekly,
     this.link,
     required this.onLinkChanged,
   }) : _getCurrentCategoryController = getCurrentCategoryController;
@@ -114,7 +116,7 @@ class AddSummarySection extends StatelessWidget {
             ],
           ),
         ),
-        isWeekend
+        !isWeekend
             ? Column(
                 children: [
                   SizedBox(height: 16),
@@ -123,7 +125,7 @@ class AddSummarySection extends StatelessWidget {
                       Expanded(
                         child: InkWell(
                           onTap: () {
-                            // TODO: Tambahkan logic untuk memilih tangal hari ini
+                            onTapWeekly(true);
                           },
                           borderRadius: BorderRadius.circular(12),
                           child: Container(

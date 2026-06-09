@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gamilife/core/config/category_button_config.dart';
 import 'package:gamilife/core/constants/colors.dart';
+import 'package:gamilife/core/providers/progress_provider.dart';
 import 'package:gamilife/presentation/widgets/timeline_recent_activities.dart';
 
 import '../../../core/enums/enums_button_category.dart';
@@ -10,32 +12,22 @@ import '../../widgets/search_field.dart';
 import 'widgets/date_filter_section.dart';
 import 'widgets/draggable_scroll_up_button.dart';
 
-class ProgressPage extends StatefulWidget {
+class ProgressPage extends ConsumerStatefulWidget {
   const ProgressPage({super.key});
 
   @override
-  State<ProgressPage> createState() => _ProgressPageState();
+  ConsumerState<ProgressPage> createState() => _ProgressPageState();
 }
 
-class _ProgressPageState extends State<ProgressPage> {
+class _ProgressPageState extends ConsumerState<ProgressPage> {
   final TextEditingController _searchController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  double _scrollPosition = 0.0;
 
   bool _isDateFilterExpanded = false;
-  ActivityCategory _currentActivityCategory = ActivityCategory.all;
-  DateTime? _selectedDateFilter;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  void _onScroll() {
-    setState(() {
-      _scrollPosition = _scrollController.position.pixels;
-    });
   }
 
   @override
@@ -70,92 +62,85 @@ class _ProgressPageState extends State<ProgressPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SearchField(searchController: _searchController),
+              SearchField(
+                searchController: _searchController,
+                onChanged: (value) {
+                  ref.read(searchQueryProvider.notifier).state = value;
+                },
+              ),
               SizedBox(height: 10),
               ContainerCategoryButton(
-                currentCategory: _currentActivityCategory,
+                currentCategory: ref.watch(activityCategoryProvider),
                 children: [
                   CustomCategoryButton(
                     label: 'All',
-                    currentCategory: _currentActivityCategory,
+                    currentCategory: ref.watch(activityCategoryProvider),
                     buttonCategory: ActivityCategory.all,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
                       buttonCategory: ActivityCategory.all,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
                       buttonCategory: ActivityCategory.all,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     onSelected: (value) {
-                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                      setState(() {
-                        _currentActivityCategory = value;
-                      });
+                      ref.read(activityCategoryProvider.notifier).state = value;
                     },
                   ),
                   CustomCategoryButton(
                     label: 'Activity',
-                    currentCategory: _currentActivityCategory,
+                    currentCategory: ref.watch(activityCategoryProvider),
                     buttonCategory: ActivityCategory.activity,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
                       buttonCategory: ActivityCategory.activity,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
                       buttonCategory: ActivityCategory.activity,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     onSelected: (value) {
-                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                      setState(() {
-                        _currentActivityCategory = value;
-                      });
+                      ref.read(activityCategoryProvider.notifier).state = value;
                     },
                   ),
                   CustomCategoryButton(
                     label: 'Summary',
-                    currentCategory: _currentActivityCategory,
+                    currentCategory: ref.watch(activityCategoryProvider),
                     buttonCategory: ActivityCategory.summary,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
                       buttonCategory: ActivityCategory.summary,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
                       buttonCategory: ActivityCategory.summary,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     onSelected: (value) {
-                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                      setState(() {
-                        _currentActivityCategory = value;
-                      });
+                      ref.read(activityCategoryProvider.notifier).state = value;
                     },
                   ),
                   CustomCategoryButton(
                     label: 'Todo',
-                    currentCategory: _currentActivityCategory,
+                    currentCategory: ref.watch(activityCategoryProvider),
                     buttonCategory: ActivityCategory.todo,
                     buttonColorLogic: ProgressCategoryButtonConfig.background(
                       buttonCategory: ActivityCategory.todo,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     textColorLogic: ProgressCategoryButtonConfig.text(
                       buttonCategory: ActivityCategory.todo,
-                      currentCategory: _currentActivityCategory,
+                      currentCategory: ref.watch(activityCategoryProvider),
                     ),
                     onSelected: (value) {
-                      // Disini value bernilai sama dengan yang dikirimkan ke buttonCategory
-                      setState(() {
-                        _currentActivityCategory = value;
-                      });
+                      ref.read(activityCategoryProvider.notifier).state = value;
                     },
                   ),
                 ],
               ),
               SizedBox(height: 10),
               DateFilterSection(
-                selectedDate: _selectedDateFilter,
+                selectedDate: ref.watch(dateFilterProvider),
                 isDateFilterExpanded: _isDateFilterExpanded,
                 onToggle: (bool isExpanded) {
                   setState(() {
@@ -163,20 +148,15 @@ class _ProgressPageState extends State<ProgressPage> {
                   });
                 },
                 onDateSelect: (DateTime date) {
-                  setState(() {
-                    if (_selectedDateFilter == date) {
-                      // Jika date yang dipilih sama dengan yang sebelumnya,
-                      // maka set selectedDateFilter menjadi null
-                      _selectedDateFilter = null;
-                      // Dan set isDateFilterExpanded menjadi false/menutup
+                  final currentDate = ref.read(dateFilterProvider);
+                  if (currentDate == date) {
+                    ref.read(dateFilterProvider.notifier).state = null;
+                    setState(() {
                       _isDateFilterExpanded = false;
-                    } else {
-                      _selectedDateFilter = date;
-                    }
-
-                    print('Selected date: $_selectedDateFilter');
-                    print('Date value: $date');
-                  });
+                    });
+                  } else {
+                    ref.read(dateFilterProvider.notifier).state = date;
+                  }
                 },
               ),
               Expanded(
@@ -187,61 +167,65 @@ class _ProgressPageState extends State<ProgressPage> {
 
                     return Stack(
                       children: [
-                        ListView.builder(
-                          // TODO: Ganti dengan jumlah data asli setelah ada
-                          controller: _scrollController,
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            print('ListView Moved');
-                            // TODO: Ganti dengan isi data asli setelah ada
-                            if (index == 0) {
-                              return TimelineRecentActivities(
-                                time: '08:30',
-                                date: '2025/09/28',
-                                link:
-                                    'https://www.youtube.com/watch?v=8iuIcnRnYAo',
-                                description:
-                                    'Jogging selama 30 menit bersama teman-teman',
-                                skillType: SkillType.activity,
-                                skill: ['VIT', 'Social'],
-                                point: '2',
-                              );
-                            } else if (index == 1) {
-                              return TimelineRecentActivities(
-                                time: '08:30',
-                                date: '2025/09/28',
-                                description:
-                                    'Jogging selama 30 menit bersama teman-teman',
-                                skillType: SkillType.summary,
-                                point: '1',
-                              );
-                            } else if (index == 2) {
-                              return TimelineRecentActivities(
-                                time: '08:30',
-                                date: '2025/09/28',
-                                description:
-                                    'Jogging selama 30 menit bersama teman-teman',
-                                skillType: SkillType.todo,
-                                point: '1',
-                              );
-                            }
-                            return TimelineRecentActivities(
-                              time: '08:30',
-                              date: '2025/09/28',
-                              description:
-                                  'Jogging selama 30 menit bersama teman-teman Jogging selama 30 menit bersama teman-teman dbasja dsadbjasbjsd hjadsbjasbduhas sgdagsja sadgjas',
-                              skillType: SkillType.activity,
-                              skill: ['Social', 'VIT'],
-                              point: '1',
+                        ref
+                            .watch(allProgressStreamProvider)
+                            .when(
+                              data: (_) {
+                                final progressList = ref.watch(
+                                  filteredProgressProvider,
+                                );
+
+                                if (progressList.isEmpty) {
+                                  return const Center(
+                                    child: Text(
+                                      'No progress data found',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: AppColors.gray3,
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return ListView.builder(
+                                  controller: _scrollController,
+                                  itemCount: progressList.length,
+                                  itemBuilder: (context, index) {
+                                    final progress = progressList[index];
+
+                                    return TimelineRecentActivities(
+                                      progressData: progress,
+                                    );
+                                  },
+                                );
+                              },
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                              error: (error, stack) => Center(
+                                child: Text(
+                                  'Failed to load progress: $error',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        AnimatedBuilder(
+                          animation: _scrollController,
+                          builder: (context, child) {
+                            return DraggableScrollUpButton(
+                              scrollController: _scrollController,
+                              maxX: maxX,
+                              maxY: maxY,
+                              isVisible:
+                                  _scrollController.hasClients &&
+                                  _scrollController.position.pixels > 0,
                             );
                           },
-                        ),
-
-                        DraggableScrollUpButton(
-                          scrollController: _scrollController,
-                          maxX: maxX,
-                          maxY: maxY,
-                          isVisible: _scrollPosition > 0,
                         ),
                       ],
                     );

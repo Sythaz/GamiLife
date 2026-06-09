@@ -53,30 +53,33 @@ class CustomHeatmapContribution extends StatelessWidget {
 
   // Grid heatmap terpisah per bulan
   Widget _buildSeparatedHeatmapGrid(List<DateTime> months) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildDayLabels(),
-        SizedBox(width: 8),
-        Column(
-          children: [
-            _buildMonthHeaders(months),
-            SizedBox(height: 8),
-            Row(
-              children: [
-                ...months.map((month) {
-                  return Container(
-                    margin: month.month != months.last.month
-                        ? const EdgeInsets.only(right: 16)
-                        : null, // Jarak antar bulan kecuali bulan terakhir
-                    child: _buildMonthGrid(month),
-                  );
-                }),
-              ],
-            ),
-          ],
-        ),
-      ],
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildDayLabels(),
+          const SizedBox(width: 8),
+          Column(
+            children: [
+              _buildMonthHeaders(months),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ...months.map((month) {
+                    return Container(
+                      margin: month.month != months.last.month
+                          ? const EdgeInsets.only(right: 16)
+                          : null, // Jarak antar bulan kecuali bulan terakhir
+                      child: _buildMonthGrid(month),
+                    );
+                  }),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 

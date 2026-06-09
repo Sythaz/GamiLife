@@ -3,7 +3,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../../../core/constants/colors.dart';
 
-/// Widget untuk menampilkan progress bar XP dengan animasi dan efek shimmer.
+// Widget untuk menampilkan progress bar XP dengan animasi dan efek shimmer.
 class AnimatedXPBar extends StatefulWidget {
   final double currentXP; // Nilai XP saat ini
   final double maxXP; // Nilai XP maksimum
